@@ -32,7 +32,8 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 5000
 REDIRECT_URI = "{}:{}/callback".format(CLIENT_SIDE_URL, PORT)
-SCOPE = "playlist-modify-public playlist-modify-private"
+#SCOPE = "playlist-modify-public playlist-modify-private"
+SCOPE = "user-top-read"
 STATE = ""
 SHOW_DIALOG_bool = True
 SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
@@ -79,19 +80,27 @@ def callback():
     # Auth Step 6: Use the access token to access Spotify API
     authorization_header = {"Authorization":"Bearer {}".format(access_token)}
 
-    # Get profile data
-    user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
-    profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
-    profile_data = json.loads(profile_response.text)
+    # # Get profile data
+    # user_profile_api_endpoint = "{}/me".format(SPOTIFY_API_URL)
+    # profile_response = requests.get(user_profile_api_endpoint, headers=authorization_header)
+    # profile_data = json.loads(profile_response.text)
 
-    # Get user playlist data
-    playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
-    playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
-    playlist_data = json.loads(playlists_response.text)
+    # # Get user playlist data
+    # playlist_api_endpoint = "{}/playlists".format(profile_data["href"])
+    # playlists_response = requests.get(playlist_api_endpoint, headers=authorization_header)
+    # playlist_data = json.loads(playlists_response.text)
     
+    # # Get user top data
+    top_artists_api_endpoint = "{}/me/top/artists".format(SPOTIFY_API_URL)
+    top_artists_response = requests.get(top_artists_api_endpoint, headers=authorization_header)
+    top_artists_data = json.loads(top_artists_response.text)
+
+    top_tracks_api_endpoint = "{}/me/top/tracks".format(SPOTIFY_API_URL)
+    top_tracks_response = requests.get(top_tracks_api_endpoint, headers=authorization_header)
+    top_tracks_data = json.loads(top_tracks_response.text)
+
     # Combine profile and playlist data to display
-    display_arr = [profile_data] + playlist_data["items"]
-    return render_template("index.html",sorted_array=display_arr)
+    return render_template("index.html",artists_object=top_artists_data["items"], tracks_object=top_tracks_data["items"])
 ####
 
 if __name__ == "__main__":
