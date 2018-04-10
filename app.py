@@ -91,11 +91,11 @@ def callback():
     # playlist_data = json.loads(playlists_response.text)
     
     # # Get user top data
-    top_artists_api_endpoint = "{}/me/top/artists".format(SPOTIFY_API_URL)
+    top_artists_api_endpoint = "{}/me/top/artists?time_range=medium_term".format(SPOTIFY_API_URL)
     top_artists_response = requests.get(top_artists_api_endpoint, headers=authorization_header)
     top_artists_data = json.loads(top_artists_response.text)
 
-    top_tracks_api_endpoint = "{}/me/top/tracks".format(SPOTIFY_API_URL)
+    top_tracks_api_endpoint = "{}/me/top/tracks?time_range=medium_term".format(SPOTIFY_API_URL)
     top_tracks_response = requests.get(top_tracks_api_endpoint, headers=authorization_header)
     top_tracks_data = json.loads(top_tracks_response.text)
 
