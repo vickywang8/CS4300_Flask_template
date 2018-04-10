@@ -8,6 +8,9 @@
             <p>Project Name: {{ name }}</p>
             <p>Student Name: ({{ netid }})</p>
         </div>
+        {% for item in sorted_array%}
+        <p> {{ item }} </p>
+        {% endfor %}
         <form class="form-inline global-search">
             <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
                 C
@@ -37,3 +40,4 @@
     </body>
 
 </html>
+
