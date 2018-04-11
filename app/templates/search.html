@@ -42,7 +42,7 @@
                         <td>{{ concert.name }}</td>
                         <td>{{ concert.date }} {{ concert.time }}</td>
                         <td>{{ concert.location }}</td>
-                        <td>{{ concert.link }}</td>
+                        <td><a href="{{ concert.link }}">{{ concert.link }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
