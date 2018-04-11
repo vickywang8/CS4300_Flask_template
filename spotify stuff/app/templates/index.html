@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/main.css">
+    </head>
+    <body>
+        <div class="topcorner">
+            <p>Project Name: {{ name }}</p>
+            <p>Student Name: ({{ netid }})</p>
+        </div>
+        <h1>Top Artists</h1>
+        {% for item in artists_object%}
+        <p> {{ item.name }} </p>
+        {% endfor %}
+        <h1>Top Tracks</h1>
+        {% for item in tracks_object%}
+        <p> {{ item.name }}, {{ item.artists[0].name }} </p>
+        {% endfor %}
+        <form class="form-inline global-search">
+            <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+                C
+                <font color=#EA4335>S</font>
+                <font color=#FBBC05>4</font>
+                3
+                <font color=#34A853>0</font>
+                <font color=#EA4335>0</font>
+            </h1>
+            
+            <br><br>
+            
+            <div class="form-group">
+            <form action="/search" method="GET">
+                <input id="input" type="text" name="search" class="form-control" placeholder="Your Input">
+                <button type="submit" class="btn btn-info"> Go! </button>
+            </form>
+            </div>
+        </form>
+        <form class="form-inline global-search">
+        {% if data %}
+            <h1>{{output_message}}</h1>
+            {% for d in data %}  
+                <br>
+                <p>{{d}}</p>
+            {% endfor %}
+        {% endif %}
+        </form>
+    </body>
+
+</html>
+
