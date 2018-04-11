@@ -25,12 +25,30 @@
         <form class="form-inline global-search">
         {% if data %}
             <h1>{{output_message}}</h1>
-            {% for d in data %}  
-                <br>
-                <p>{{d}}</p>
-            {% endfor %}
+            </form>
+            <div class="container">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Concert</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for concert in data %}  
+                    <tr>
+                        <td>{{ concert.name }}</td>
+                        <td>{{ concert.date }} {{ concert.time }}</td>
+                        <td>{{ concert.location }}</td>
+                        <td>{{ concert.link }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
         {% endif %}
-        </form>
     </body>
 
 </html>
