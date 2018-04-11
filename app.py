@@ -6,12 +6,13 @@ import base64
 import urllib
 import os
 
-#### Code from https://github.com/drshrey/spotify-flask-auth-example
+#### Code modified from https://github.com/drshrey/spotify-flask-auth-example
 # Authentication Steps, paramaters, and responses are defined at https://developer.spotify.com/web-api/authorization-guide/
 # Visit this url to see all the steps, parameters, and expected response. 
 
 
-app = Flask(__name__)
+project_name = "ConcertMaster"
+net_id = "Minzhi Wang: mw787, Emily Sun: eys27, Priyanka Rathnam: pcr43, Lillyan Pan: ldp54, Rachel Kwak: sk2472"
 
 template_dir = os.path.abspath('app/templates')
 app = Flask(__name__, template_folder=template_dir)
@@ -100,10 +101,23 @@ def callback():
     top_tracks_data = json.loads(top_tracks_response.text)
 
     # Combine profile and playlist data to display
-    return render_template("index.html",artists_object=top_artists_data["items"], tracks_object=top_tracks_data["items"])
+    return render_template("index.html", name=project_name, netid=net_id, artists_object=top_artists_data["items"], tracks_object=top_tracks_data["items"])
 ####
+@app.route("/callback", methods=['GET'])
+def search():
+	query = request.args.get('search')
+	print(query)
+	if not query:
+		data = []
+		output_message = ''
+	else:
+		output_message = "Your search: " + query
+		data = range(5)
+	return render_template('index.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+
+
 
 if __name__ == "__main__":
   print "Flask app running at http://0.0.0.0:5000"
-  #app.debug = True
+  app.debug = True
   socketio.run(app, host="0.0.0.0", port=5000)
