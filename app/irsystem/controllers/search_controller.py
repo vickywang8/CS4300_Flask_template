@@ -17,23 +17,31 @@ TICKETMASTER_API_KEY = "&apikey=TwBrYBbmHzChYbyzNgGYOk2NJVxKTNDs"
 
 @irsystem.route('/', methods=['GET'])
 def search():
+	queried_artist = request.args.get('artist')
 	queried_genre = request.args.get('genre')
 	queried_location = request.args.get('location')
 	queried_date = request.args.get('date')
-	if not (queried_genre or queried_location or queried_date):
+	data = None
+	if not (queried_artist or queried_genre or queried_date or queried_location):
 		data = []
-		output_message = ''
+		output_message = ""
 	else:
 		if not queried_genre:
 			queried_genre = "music"
 		if queried_date:
 			start_date, end_date = format_date(queried_date)
 		output_message = format_output_message(queried_genre, queried_location, queried_date)
-		search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, TICKETMASTER_API_KEY)
+		search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
 		search_response = requests.get(search_endpoint)
 		search_data = json.loads(search_response.text)
-		data = get_concert_data(search_data)
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, queried_genre= queried_genre, queried_date=queried_date, queried_location=queried_location)
+		if "spellcheck" in search_data.keys():
+			#output_message = "Did you mean " + search_data["spellcheck"]["suggestions"][0]["suggestion"] + "?"
+			spellchecked_artist = search_data["spellcheck"]["suggestions"][0]["suggestion"]
+			search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, spellchecked_artist, TICKETMASTER_API_KEY)
+			search_response = requests.get(search_endpoint)
+			search_data = json.loads(search_response.text)	
+		data = get_concert_data(search_data)	
+	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, queried_genre= queried_genre, queried_date=queried_date, queried_location=queried_location, queried_artist=queried_artist)
 
 def get_concert_data(search_data):
 	events = search_data["_embedded"]["events"]

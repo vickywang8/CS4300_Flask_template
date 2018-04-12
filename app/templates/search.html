@@ -69,7 +69,12 @@
             <br><br>
             
             <div class="form-group">
-                {% if queried_genre == "music" %}
+                {% if not queried_artist %}
+                    <input id="artist_in" type="text" name="artist" class="form-control" placeholder="Artist">
+                {% else %}
+                    <input id="artist_in" type="text" name="artist" class="form-control" value="{{ queried_artist }}">
+                {% endif %}
+                {% if queried_genre == "music" or not queried_genre %}
                     <input id="genre_in" type="text" name="genre" class="form-control" placeholder="Genre">
                 {% else %}
                     <input id="genre_in" type="text" name="genre" class="form-control" value="{{ queried_genre }}">
@@ -88,8 +93,8 @@
             <button type="submit" class="btn btn-info"> Go! </button>
         </form>
         <form class="form-inline global-search">
+        <h1>{{output_message}}</h1>
         {% if data %}
-            <h1>{{output_message}}</h1>
             </form>
             <div class="container">
               <table class="table table-striped">
