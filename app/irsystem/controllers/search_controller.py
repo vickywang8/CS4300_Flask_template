@@ -71,14 +71,12 @@ def format_date(queried_date):
 
 ## ticketmaster format to readable format
 def get_readable_date(date):
-	print(date)
 	date_obj = dt.datetime.strptime(date, '%Y-%m-%d')
 	date = dt.datetime.strftime(date_obj,'%b %d, %Y')
 	return date
 
 ## ticketmaster format to readable format
 def get_readable_time(time):
-	print(time)
 	time_obj = dt.datetime.strptime(time, '%H:%M:%S')
 	time = dt.datetime.strftime(time_obj,'%I:%M %p')
 	return time
