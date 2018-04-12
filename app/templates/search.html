@@ -20,16 +20,23 @@
         'Pop', 'R&B', 'Reggae', 'Religious', 'Rock', 'World'
       ];
 
-      var states = [
-        'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-        'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-        'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-        'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-        'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-        'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-        'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-        'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+      var areas = [
+        'Birmingham & More', 'Charlotte', 'Chicagoland & Northern IL', 'Cincinnati & Dayton',
+        'Dallas - Fort Worth & More', 'Denver & More', 'Detroit, Toledo & More', 
+        'El Paso & New Mexico', 'Grand Rapids & More', 'Greater Atlanta Area', 
+        'Greater Boston Area', 'Cleveland, Youngstown & More', 'Greater Columbus Area',
+        'Greater Las Vegas Area', 'Greater Miami Area', 'Minneapolis/St. Paul & More', 
+        'Greater Orlando Area', 'Greater Philadelphia Area', 'Greater Pittsburgh Area', 
+        'Greater San Diego Area', 'Greater Tampa Area', 'Houston & More', 'Indianapolis & More',
+        'Iowa', 'Jacksonville & More', 'Kansas City & More', 'Greater Los Angeles Area', 
+        'Louisville & Lexington', 'Memphis, Little Rock & More', 'Milwaukee & WI', 
+        'Nashville, Knoxville & More', 'New England', 'New Orleans & More', 'New York/Tri-State Area',
+        'Phoenix & Tuscon', 'Portland & More', 'Raleigh & Durham', 'Saint-Louis & More',
+        'San Antonio & Austin', 'N.California/N.Nevada', 'Greater Seattle Area', 
+        'North & South Dakota', 'Upstate New York', 'Utah & Montana', 'Virginia', 
+        'Washington, DC and Maryland', 'West Virginia', 'Hawaii', "Alaska", 
+        'Nebraska', 'Springfield', 'Central Illinois', 'Northern New Jersey',
+        'South Carolina', 'South Texas', 'Beaumont', 'Connecticut', 'Oklahoma'
       ];
 
       $( function() {
@@ -39,8 +46,8 @@
       } );
 
       $( function() {
-        $( "#location_in" ).autocomplete({
-          source: states
+        $( "#area_in" ).autocomplete({
+          source: areas
         });
       } );
       //from http://www.daterangepicker.com/
@@ -79,10 +86,15 @@
                 {% else %}
                     <input id="genre_in" type="text" name="genre" class="form-control" value="{{ queried_genre }}">
                 {% endif %}
-                {% if not queried_location %}
-                    <input id="location_in" type="text" name="location" class="form-control" placeholder="Location">
+                {% if not queried_area %}
+                    <input id="area_in" type="text" name="area" class="form-control" placeholder="Area">
                 {% else %}
-                    <input id="location_in" type="text" name="location" class="form-control" value="{{ queried_location }}">
+                    <input id="area_in" type="text" name="area" class="form-control" value="{{ queried_area }}">
+                {% endif %}
+                {% if not queried_city %}
+                    <input id="city_in" type="text" name="city" class="form-control" placeholder="City">
+                {% else %}
+                    <input id="city_in" type="text" name="city" class="form-control" value="{{ queried_city }}">
                 {% endif %}
                 {% if not queried_date %}
                     <input id="date_in" type="text" name="date" class="form-control" placeholder="Date">
