@@ -46,7 +46,6 @@ def get_concert_data(search_data, queried_genre):
 			location = event["_embedded"]["venues"][0]["name"]
 			concert_data = {"name": name, "date": date, "time": time, "link": link, "location": location}
 			concerts.append(concert_data)
-	print(concerts[1])
 	return concerts
 
 
