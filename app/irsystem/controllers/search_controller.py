@@ -6,6 +6,8 @@ from flask import Flask, request, redirect, g, render_template
 import requests
 import json
 import dateutil.parser as dparser
+import datetime as dt
+
 
 project_name = "Ilan's Cool Project Template"
 net_id = "Ilan Filonenko: if56"
@@ -37,12 +39,10 @@ def get_concert_data(search_data):
 	events = search_data["_embedded"]["events"]
 	concerts = []
 	for event in events:
-		# genre = event["classifications"][0]["genre"]["name"]
-		# if queried_genre.lower() in genre.lower():
 		name = event["name"]
-		date = event["dates"]["start"]["localDate"]
+		date = get_readable_date(event["dates"]["start"]["localDate"])
 		try:
-			time = event["dates"]["start"]["localTime"]
+			time = get_readable_time(event["dates"]["start"]["localTime"])
 		except:
 			time = ""
 		link = event["url"]
@@ -51,6 +51,7 @@ def get_concert_data(search_data):
 		concerts.append(concert_data)
 	return concerts
 
+## date range picker to ticketmaster format
 def format_date(queried_date):
 	start_date = queried_date.split("-")[0]
 	end_date = queried_date.split("-")[1]
@@ -59,6 +60,20 @@ def format_date(queried_date):
 	end_date = str(dparser.parse(end_date))
 	end_date = end_date.replace(" ", "T")+"Z"
 	return start_date, end_date
+
+## ticketmaster format to readable format
+def get_readable_date(date):
+	print(date)
+	date_obj = dt.datetime.strptime(date, '%Y-%m-%d')
+	date = dt.datetime.strftime(date_obj,'%b %d, %Y')
+	return date
+
+## ticketmaster format to readable format
+def get_readable_time(time):
+	print(time)
+	time_obj = dt.datetime.strptime(time, '%H:%M:%S')
+	time = dt.datetime.strftime(time_obj,'%I:%M %p')
+	return time
 
 def format_output_message(queried_genre, queried_location, queried_date):
 	if queried_genre == "music":
