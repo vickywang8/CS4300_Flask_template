@@ -30,17 +30,23 @@ def search():
 			queried_genre = "music"
 		if queried_date:
 			start_date, end_date = format_date(queried_date)
-		output_message = format_output_message(queried_genre, queried_location, queried_date)
+		# output_message = format_output_message(queried_genre, queried_location, queried_date)
+		output_message = ""
 		search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
-		search_response = requests.get(search_endpoint)
-		search_data = json.loads(search_response.text)
-		if "spellcheck" in search_data.keys():
-			#output_message = "Did you mean " + search_data["spellcheck"]["suggestions"][0]["suggestion"] + "?"
-			spellchecked_artist = search_data["spellcheck"]["suggestions"][0]["suggestion"]
-			search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, spellchecked_artist, TICKETMASTER_API_KEY)
+		try:
 			search_response = requests.get(search_endpoint)
-			search_data = json.loads(search_response.text)	
-		data = get_concert_data(search_data)	
+			search_data = json.loads(search_response.text)
+			if "spellcheck" in search_data.keys():
+				print(search_data)
+				spellchecked_artist = search_data["spellcheck"]["suggestions"][0]["suggestion"]
+				search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, spellchecked_artist, TICKETMASTER_API_KEY)
+				search_response = requests.get(search_endpoint)
+				search_data = json.loads(search_response.text)	
+			data = get_concert_data(search_data)	
+		except Exception as e:
+			date = []
+			output_message = "Your search returned no results. Modify your search and try again!"
+			print(e)
 	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, queried_genre= queried_genre, queried_date=queried_date, queried_location=queried_location, queried_artist=queried_artist)
 
 def get_concert_data(search_data):
