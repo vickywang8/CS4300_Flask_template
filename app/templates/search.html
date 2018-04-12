@@ -114,7 +114,8 @@
                   <tr>
                     <th>Concert</th>
                     <th>Date</th>
-                    <th>Location</th>
+                    <th>Venue</th>
+                    <th>City</th>
                     <th>Link</th>
                   </tr>
                 </thead>
@@ -123,7 +124,8 @@
                     <tr>
                         <td>{{ concert.name }}</td>
                         <td>{{ concert.date }} {{ concert.time }}</td>
-                        <td>{{ concert.location }}</td>
+                        <td>{{ concert.venue }}</td>
+                        <td>{{ concert.city }}</td>
                         <td><a href="{{ concert.link }}">{{ concert.link }}</a></td>
                     </tr>
                 {% endfor %}
