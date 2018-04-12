@@ -116,17 +116,15 @@
                     <th>Date</th>
                     <th>Venue</th>
                     <th>City</th>
-                    <th>Link</th>
                   </tr>
                 </thead>
                 <tbody>
                 {% for concert in data %}  
                     <tr>
-                        <td>{{ concert.name }}</td>
+                        <td><a href="{{ concert.link }}">{{ concert.name }}</a></td>
                         <td>{{ concert.date }} {{ concert.time }}</td>
                         <td>{{ concert.venue }}</td>
                         <td>{{ concert.city }}</td>
-                        <td><a href="{{ concert.link }}">{{ concert.link }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

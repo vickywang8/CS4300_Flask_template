@@ -43,6 +43,13 @@ def search():
 	queried_date = request.args.get('date')
 	data = None
 	output_message = ""
+	if queried_area in areas_dict.keys():
+		queried_area_code = areas_dict[queried_area]
+	elif queried_area:
+		## area code that does not exist
+		queried_area_code = "126"
+	else:
+		queried_area_code = ""
 	if not (queried_artist or queried_genre or queried_area or queried_city or queried_date):
 		data = []
 	else:
@@ -50,14 +57,15 @@ def search():
 			queried_genre = "music"
 		if queried_date:
 			start_date, end_date = format_date(queried_date)
-		search_endpoint = "{}events.json?classificationName={}&city={}&marketId={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_city, areas_dict[queried_area], start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
+		search_endpoint = "{}events.json?classificationName={}&city={}&marketId={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_city, queried_area_code, start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
+		print(search_endpoint)
 		try:
 			search_response = requests.get(search_endpoint)
 			search_data = json.loads(search_response.text)
+			#print(search_data)
 			if "spellcheck" in search_data.keys():
-				print(search_data)
 				spellchecked_artist = search_data["spellcheck"]["suggestions"][0]["suggestion"]
-				search_endpoint = "{}events.json?classificationName={}&city={}&marketId={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_city, areas_dict[queried_area], start_date, end_date, spellchecked_artist, TICKETMASTER_API_KEY)
+				search_endpoint = "{}events.json?classificationName={}&city={}&marketId={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_city, queried_area_code, start_date, end_date, spellchecked_artist, TICKETMASTER_API_KEY)
 				search_response = requests.get(search_endpoint)
 				search_data = json.loads(search_response.text)	
 			data = get_concert_data(search_data)	
