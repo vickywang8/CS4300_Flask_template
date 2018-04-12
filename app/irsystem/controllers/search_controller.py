@@ -30,7 +30,6 @@ def search():
 			queried_genre = "music"
 		if queried_date:
 			start_date, end_date = format_date(queried_date)
-		# output_message = format_output_message(queried_genre, queried_location, queried_date)
 		output_message = ""
 		search_endpoint = "{}events.json?classificationName={}&city={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_location, start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
 		try:
@@ -87,7 +86,11 @@ def get_readable_time(time):
 	time = dt.datetime.strftime(time_obj,'%I:%M %p')
 	return time
 
-def format_output_message(queried_genre, queried_location, queried_date):
+def format_output_message(spellchecked_artist, queried_genre, queried_location, queried_date):
+	if spellchecked_artist:
+		spellchecked_artist = spellchecked_artist + " "
+	else:
+		spellchecked_artist = ""
 	if queried_genre == "music":
 		queried_genre = ""
 	else:
@@ -100,5 +103,5 @@ def format_output_message(queried_genre, queried_location, queried_date):
 		queried_date = "on " + queried_date
 	else:
 		queried_date = ""
-	return "You're looking for " + queried_genre + "concerts " + queried_location + queried_date
+	return "You're looking for " + spellchecked_artist + queried_genre + "concerts " + queried_location + queried_date
 
