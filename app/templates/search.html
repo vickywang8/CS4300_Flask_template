@@ -2,17 +2,16 @@
     <head>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+        <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
     </head>
-
-
-
     <body>
-
       <!-- Autocomplete --> 
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
       <script>
       var genres = [
         'Alternative', 'Ballads/Romantic', 'Blues', 'Children\'s Music', 
@@ -44,6 +43,16 @@
           source: states
         });
       } );
+      //from http://www.daterangepicker.com/
+      $(function() {
+        $( "#date_in" ).daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'MM/DD/YYYY h:mm A'
+            }
+        });
+      });
 
       </script>
 
@@ -60,9 +69,21 @@
             <br><br>
             
             <div class="form-group">
-                <input id="genre_in" type="text" name="genre" class="form-control" placeholder="Genre">
-                <input id="location_in" type="text" name="location" class="form-control" placeholder="Location">
-                <input id="date_in" type="text" name="date" class="form-control" placeholder="Date">
+                {% if not queried_genre %}
+                    <input id="genre_in" type="text" name="genre" class="form-control" placeholder="Genre">
+                {% else %}
+                    <input id="genre_in" type="text" name="genre" class="form-control" value="{{ queried_genre }}">
+                {% endif %}
+                {% if not queried_location %}
+                    <input id="location_in" type="text" name="location" class="form-control" placeholder="Location">
+                {% else %}
+                    <input id="location_in" type="text" name="location" class="form-control" value="{{ queried_location }}">
+                {% endif %}
+                {% if not queried_date %}
+                    <input id="date_in" type="text" name="date" class="form-control" placeholder="Date">
+                {% else %}
+                    <input id="date_in" type="text" name="date" class="form-control" value="{{ queried_date }}">
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-info"> Go! </button>
         </form>
