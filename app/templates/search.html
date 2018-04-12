@@ -69,7 +69,7 @@
             <br><br>
             
             <div class="form-group">
-                {% if not queried_genre %}
+                {% if queried_genre == "music" %}
                     <input id="genre_in" type="text" name="genre" class="form-control" placeholder="Genre">
                 {% else %}
                     <input id="genre_in" type="text" name="genre" class="form-control" value="{{ queried_genre }}">
