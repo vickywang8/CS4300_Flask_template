@@ -11,6 +11,11 @@
         <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
     </head>
     <body>
+    <style>
+    td {
+        height: 120%
+    }
+    </style>
       <!-- Autocomplete --> 
       <script>
       var genres = [
@@ -113,6 +118,7 @@
                 <thead>
                   <tr>
                     <th>Concert</th>
+                    <th></th>
                     <th>Date</th>
                     <th>Venue</th>
                     <th>City</th>
@@ -121,6 +127,7 @@
                 <tbody>
                 {% for concert in data %}  
                     <tr>
+                        <td><img src="{{ concert.image }}" style="width: 100px; height: 60px"></td>
                         <td><a href="{{ concert.link }}">{{ concert.name }}</a></td>
                         <td>{{ concert.date }} {{ concert.time }}</td>
                         <td>{{ concert.venue }}</td>
