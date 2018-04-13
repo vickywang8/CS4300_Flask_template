@@ -58,11 +58,21 @@
       //from http://www.daterangepicker.com/
       $(function() {
         $( "#date_in" ).daterangepicker({
+            autoUpdateInput: false,
             timePicker: true,
             timePickerIncrement: 30,
             locale: {
-                format: 'MM/DD/YYYY h:mm A'
+                cancelLabel: 'Clear'
             }
+        });
+
+        $("#date_in").on('apply.daterangepicker', function(ev, picker) {
+            console.log(picker.startDate)
+            $(this).val(picker.startDate.format('MM/DD/YYYY h:mm A') +  ' - ' + picker.endDate.format('MM/DD/YYYY h:mm A'));
+        });
+
+        $("#date_in").on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
         });
       });
 
@@ -107,7 +117,7 @@
                     <input id="date_in" type="text" name="date" class="form-control" value="{{ queried_date }}">
                 {% endif %}
             </div>
-            <button type="submit" class="btn btn-info"> Go! </button>
+            <button type="submit" name="submit_btn" class="btn btn-info" value="submitted"> Go! </button>
         </form>
         <form class="form-inline global-search">
         <h1>{{output_message}}</h1>

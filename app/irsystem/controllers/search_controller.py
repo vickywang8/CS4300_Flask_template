@@ -36,27 +36,25 @@ areas_dict = {
 
 @irsystem.route('/', methods=['GET'])
 def search():
-	queried_artist = request.args.get('artist')
-	queried_genre = request.args.get('genre')
-	queried_area = request.args.get('area')
-	queried_city = request.args.get('city')
-	queried_date = request.args.get('date')
-	data = None
+	data = []
 	output_message = ""
-	if queried_area in areas_dict.keys():
-		queried_area_code = areas_dict[queried_area]
-	elif queried_area:
-		## area code that does not exist
-		queried_area_code = "126"
-	else:
-		queried_area_code = ""
-	if not (queried_artist or queried_genre or queried_area or queried_city or queried_date):
-		data = []
-	else:
+	if request.args.get('submit_btn') == "submitted":
+		print("hi")
+		queried_artist = request.args.get('artist')
+		queried_genre = request.args.get('genre')
+		queried_area = request.args.get('area')
+		queried_city = request.args.get('city')
+		queried_date = request.args.get('date')
+		if queried_area in areas_dict.keys():
+			queried_area_code = areas_dict[queried_area]
+		elif queried_area:
+			## area code that does not exist
+			queried_area_code = "126"
+		else:
+			queried_area_code = ""
 		if not queried_genre:
 			queried_genre = "music"
-		if queried_date:
-			start_date, end_date = format_date(queried_date)
+		start_date, end_date = format_date(queried_date)
 		search_endpoint = "{}events.json?classificationName={}&city={}&marketId={}&countryCode=US&startDateTime={}&endDateTime={}&keyword={}&includeSpellcheck=yes{}".format(TICKETMASTER_API_URL, queried_genre, queried_city, queried_area_code, start_date, end_date, queried_artist, TICKETMASTER_API_KEY)
 		print(search_endpoint)
 		try:
@@ -73,7 +71,8 @@ def search():
 			date = []
 			output_message = "Your search returned no results. Modify your search and try again!"
 			print(e)
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, queried_genre= queried_genre, queried_date=queried_date, queried_city=queried_city, queried_area=queried_area, queried_artist=queried_artist)
+		return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, queried_genre= queried_genre, queried_date=queried_date, queried_city=queried_city, queried_area=queried_area, queried_artist=queried_artist)
+	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
 
 def get_concert_data(search_data):
 	events = search_data["_embedded"]["events"]
@@ -95,6 +94,8 @@ def get_concert_data(search_data):
 
 ## date range picker to ticketmaster format
 def format_date(queried_date):
+	if not queried_date:
+		return "",""
 	start_date = queried_date.split("-")[0]
 	end_date = queried_date.split("-")[1]
 	start_date= str(dparser.parse(start_date))
