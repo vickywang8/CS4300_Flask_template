@@ -3,6 +3,7 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 import json
 from flask import Flask, request, redirect, g, render_template
+from app.music_story.api import *
 import requests
 import json
 import dateutil.parser as dparser
@@ -14,6 +15,20 @@ net_id = "Ilan Filonenko: if56"
 
 TICKETMASTER_API_URL = "https://app.ticketmaster.com/discovery/v2/"
 TICKETMASTER_API_KEY = "&apikey=TwBrYBbmHzChYbyzNgGYOk2NJVxKTNDs"
+
+# First connection
+MUSICSTORY_KEY = '0bcfd53c38f54f5201c1f4d12eb069020b8afec9'
+MUSICSTORY_SECRETKEY = 'b8a9303cdf01c6f12c400f6a165215bb3c72ea18'
+
+ms_api = MusicStoryApi(MUSICSTORY_KEY, MUSICSTORY_SECRETKEY)
+ms_api.connect()
+
+token = ms_api.token
+token_secret = ms_api.token_secret
+
+# save this for later usage, then on next connection :
+ms_api = MusicStoryApi(MUSICSTORY_KEY, MUSICSTORY_SECRETKEY, token, token_secret)
+ms_api.connect()
 
 areas_dict = {
         'Birmingham & More': "1", 'Charlotte' : "2", 'Chicagoland & Northern IL': "3", 'Cincinnati & Dayton': "4",
