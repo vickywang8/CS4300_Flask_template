@@ -86,8 +86,9 @@ def get_concert_data(search_data):
 		link = event["url"]
 		venue = event["_embedded"]["venues"][0]["name"]
 		city = event["_embedded"]["venues"][0]["city"]["name"]
+		state = event["_embedded"]["venues"][0]["state"]["stateCode"]
 		image = event["images"][0]["url"]
-		concert_data = {"name": name, "date": date, "time": time, "link": link, "venue": venue, "city": city, "image": image}
+		concert_data = {"name": name, "date": date, "time": time, "link": link, "venue": venue, "city": city, "state": state, "image": image}
 		concerts.append(concert_data)
 	return concerts
 
