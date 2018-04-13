@@ -67,7 +67,6 @@
         });
 
         $("#date_in").on('apply.daterangepicker', function(ev, picker) {
-            console.log(picker.startDate)
             $(this).val(picker.startDate.format('MM/DD/YYYY h:mm A') +  ' - ' + picker.endDate.format('MM/DD/YYYY h:mm A'));
         });
 

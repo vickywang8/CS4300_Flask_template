@@ -39,7 +39,6 @@ def search():
 	data = []
 	output_message = ""
 	if request.args.get('submit_btn') == "submitted":
-		print("hi")
 		queried_artist = request.args.get('artist')
 		queried_genre = request.args.get('genre')
 		queried_area = request.args.get('area')
