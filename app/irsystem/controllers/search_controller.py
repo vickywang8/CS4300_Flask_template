@@ -11,7 +11,7 @@ from nltk.stem import PorterStemmer
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
-project_name = "ConcertMaster"
+project_name = "RecommenTED"
 net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan Pan: ldp54, Rachel Kwak sk2472"
 
 tokenizer = TreebankWordTokenizer()
