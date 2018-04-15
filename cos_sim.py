@@ -43,6 +43,13 @@ def build_jac(n_talks, all_talks, top_docs):
 
     return jaccard
 
+def get_top_jac(top_id, jaccard, top_docs):
+	mapping = {top_docs[i]:i for i in range(0, len(top_docs))}
+	top_jaccard = jaccard[mapping[top_id]]
+	sort_jac = np.argsort(np.array(top_jaccard))[::-1]
+
+	return np.array(top_docs)[sort_jac]
+
 
 def build_inverted_index(msgs):
     index = defaultdict(list)
@@ -160,14 +167,10 @@ if __name__ == "__main__":
 
 	top_docs = [doc_id for _, doc_id in top_10]
 
-	jac = build_jac(len(top_docs), all_talks, top_docs)
-	print(jac)
+	top_id = top_10[0][1]
 
-	for score, doc_id in top_10:
-		print score
-		print doc_id
-		print all_talks[doc_id]['title']
-	# 	print all_talks[doc_id]['ratings']
-	# 	print all_talks[doc_id]['related_talks']
-	# 	print all_talks[doc_id]['tags']
+	jac = build_jac(len(top_docs), all_talks, top_docs)
+
+	top_jac = get_top_jac(top_id, jac, top_docs)
+
 
