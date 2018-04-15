@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import csv
+import ast
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
 # from nltk.stem.wordnet import WordNetLemmatizer
@@ -15,6 +16,33 @@ from nltk.tokenize import TreebankWordTokenizer
 # 			new_msg.append(new)
 # 	print new_msg
 # 	return new_msg
+
+# JACCARD 
+def build_jac(n_talks, all_talks, top_docs):
+    jaccard = np.zeros((n_talks, n_talks))
+    
+    for i in range(0, n_talks):
+        for j in range(i, n_talks):
+            if (i==j):
+                jaccard[i, j] = 1
+                jaccard[j, i] = 1
+                continue
+
+            doc_i = top_docs[i]
+            doc_j = top_docs[j]
+            i_tags = set(ast.literal_eval(all_talks[doc_i]['tags']))
+            j_tags = set(ast.literal_eval(all_talks[doc_j]['tags']))
+
+            intersect = len(i_tags & j_tags)
+            union = len(i_tags | j_tags)
+            
+            sim = float(intersect)/float(union)
+                   
+            jaccard[i, j] = sim
+            jaccard[j, i] = sim
+
+    return jaccard
+
 
 def build_inverted_index(msgs):
     index = defaultdict(list)
@@ -103,8 +131,8 @@ def index_search(query, index, idf, doc_norms):
 if __name__ == "__main__":
 	tokenizer = TreebankWordTokenizer()
 	# lemmatizer = WordNetLemmatizer()
-	all_talks = {}
 
+	all_talks = {}
 	with open('ted_main.csv') as csvfile:
 		reader = csv.DictReader(csvfile)
 		i = 0
@@ -112,13 +140,15 @@ if __name__ == "__main__":
 			all_talks[i] = {"title": row['title'], 
 						   "description": row['description'], 
 						   "speaker": row['main_speaker'], 
+						   "ratings": row['ratings'],
+						   "related_talks": row['related_talks'],
 						   "tags": row["tags"], 
 						   "url": row["url"], 
 						   "views": row['views']}
 			i += 1
 
 	inv_idx = build_inverted_index(all_talks)
-	idf = compute_idf(inv_idx, len(all_talks), min_df=10,  max_df_ratio=0.1)
+	idf = compute_idf(inv_idx, len(all_talks), min_df=10,  max_df_ratio=0.95)
 
 	# prune the terms left out by idf
 	inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
@@ -126,11 +156,18 @@ if __name__ == "__main__":
 	doc_norms = compute_doc_norms(inv_idx, idf, len(all_talks))
 
 	sample_query = "facebook"
-	top_5 = index_search(sample_query, inv_idx, idf, doc_norms)[:10]
-	for score, doc_id in top_5:
+	top_10 = index_search(sample_query, inv_idx, idf, doc_norms)[:10]
+
+	top_docs = [doc_id for _, doc_id in top_10]
+
+	jac = build_jac(len(top_docs), all_talks, top_docs)
+	print(jac)
+
+	for score, doc_id in top_10:
 		print score
 		print doc_id
 		print all_talks[doc_id]['title']
-		print all_talks[doc_id]['speaker']
-		print all_talks[doc_id]['tags']
+	# 	print all_talks[doc_id]['ratings']
+	# 	print all_talks[doc_id]['related_talks']
+	# 	print all_talks[doc_id]['tags']
 
