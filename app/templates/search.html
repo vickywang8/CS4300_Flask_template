@@ -2,38 +2,59 @@
     <head>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+        <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
     </head>
     <body>
+
         <div class="topcorner">
             <p>Project Name: {{ name }}</p>
             <p>Student Name: ({{ netid }})</p>
         </div>
         <form class="form-inline global-search">
             <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-                C
-                <font color=#EA4335>S</font>
-                <font color=#FBBC05>4</font>
-                3
-                <font color=#34A853>0</font>
-                <font color=#EA4335>0</font>
+                ConcertMaster
             </h1>
             
             <br><br>
             
             <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder="Your Input">
+                <input id="input" type="text" name="search" class="form-control" placeholder="What do you want to watch today?">
             </div>
-            <button type="submit" class="btn btn-info"> Go! </button>
+            <button type="submit" name="submit_btn" class="btn btn-info" value="submitted"> Go! </button>
         </form>
         <form class="form-inline global-search">
+        <h1>{{output_message}}</h1>
         {% if data %}
-            <h1>{{output_message}}</h1>
-            {% for d in data %}  
-                <br>
-                <p>{{d}}</p>
-            {% endfor %}
+            </form>
+            <div class="container">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th></th>
+                    <th>Description</th>
+                    <th>Speaker</th>
+                    <th>Tags</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for talk in data %}  
+                    <tr>
+                        <td><a href="{{ talk.url }}">{{ talk.title }}</a></td>
+                        <td>{{ talk.description }}</td>
+                        <td>{{ talk.speaker }}</td>
+                        <td>{{ talk.tags }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
         {% endif %}
-        </form>
     </body>
-
 </html>
