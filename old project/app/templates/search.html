@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+        <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    </head>
+    <body>
+
+      <!-- Autocomplete (https://jqueryui.com/autocomplete/) --> 
+      <script>
+      var genres = [
+        'Alternative', 'Ballads/Romantic', 'Blues', 'Children\'s Music', 
+        'Classical', 'Country', 'Dance/Electronic', 'Folk', 'Hip-Hop/Rap', 
+        'Holiday', 'Jazz', 'Medieval/Renaissance', 'Metal', 'New Age', 'Other', 
+        'Pop', 'R&B', 'Reggae', 'Religious', 'Rock', 'World'
+      ];
+
+      var areas = [
+        'Birmingham & More', 'Charlotte', 'Chicagoland & Northern IL', 'Cincinnati & Dayton',
+        'Dallas - Fort Worth & More', 'Denver & More', 'Detroit, Toledo & More', 
+        'El Paso & New Mexico', 'Grand Rapids & More', 'Greater Atlanta Area', 
+        'Greater Boston Area', 'Cleveland, Youngstown & More', 'Greater Columbus Area',
+        'Greater Las Vegas Area', 'Greater Miami Area', 'Minneapolis/St. Paul & More', 
+        'Greater Orlando Area', 'Greater Philadelphia Area', 'Greater Pittsburgh Area', 
+        'Greater San Diego Area', 'Greater Tampa Area', 'Houston & More', 'Indianapolis & More',
+        'Iowa', 'Jacksonville & More', 'Kansas City & More', 'Greater Los Angeles Area', 
+        'Louisville & Lexington', 'Memphis, Little Rock & More', 'Milwaukee & WI', 
+        'Nashville, Knoxville & More', 'New England', 'New Orleans & More', 'New York/Tri-State Area',
+        'Phoenix & Tuscon', 'Portland & More', 'Raleigh & Durham', 'Saint-Louis & More',
+        'San Antonio & Austin', 'N.California/N.Nevada', 'Greater Seattle Area', 
+        'North & South Dakota', 'Upstate New York', 'Utah & Montana', 'Virginia', 
+        'Washington, DC and Maryland', 'West Virginia', 'Hawaii', "Alaska", 
+        'Nebraska', 'Springfield', 'Central Illinois', 'Northern New Jersey',
+        'South Carolina', 'South Texas', 'Beaumont', 'Connecticut', 'Oklahoma'
+      ];
+
+      $( function() {
+        $( "#genre_in" ).autocomplete({
+          source: genres
+        });
+      } );
+
+      $( function() {
+        $( "#area_in" ).autocomplete({
+          source: areas
+        });
+      } );
+      //from http://www.daterangepicker.com/
+      $(function() {
+        $( "#date_in" ).daterangepicker({
+            autoUpdateInput: false,
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $("#date_in").on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY h:mm A') +  ' - ' + picker.endDate.format('MM/DD/YYYY h:mm A'));
+        });
+
+        $("#date_in").on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+      });
+
+      </script>
+
+
+        <div class="topcorner">
+            <p>Project Name: {{ name }}</p>
+            <p>Student Name: ({{ netid }})</p>
+        </div>
+        <form class="form-inline global-search">
+            <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
+                ConcertMaster
+            </h1>
+            
+            <br><br>
+            
+            <div class="form-group">
+                {% if not queried_artist %}
+                    <input id="artist_in" type="text" name="artist" class="form-control" placeholder="Artist">
+                {% else %}
+                    <input id="artist_in" type="text" name="artist" class="form-control" value="{{ queried_artist }}">
+                {% endif %}
+                {% if queried_genre == "music" or not queried_genre %}
+                    <input id="genre_in" type="text" name="genre" class="form-control" placeholder="Genre">
+                {% else %}
+                    <input id="genre_in" type="text" name="genre" class="form-control" value="{{ queried_genre }}">
+                {% endif %}
+                {% if not queried_area %}
+                    <input id="area_in" type="text" name="area" class="form-control" placeholder="Area">
+                {% else %}
+                    <input id="area_in" type="text" name="area" class="form-control" value="{{ queried_area }}">
+                {% endif %}
+                {% if not queried_city %}
+                    <input id="city_in" type="text" name="city" class="form-control" placeholder="City">
+                {% else %}
+                    <input id="city_in" type="text" name="city" class="form-control" value="{{ queried_city }}">
+                {% endif %}
+                {% if not queried_date %}
+                    <input id="date_in" type="text" name="date" class="form-control" placeholder="Date">
+                {% else %}
+                    <input id="date_in" type="text" name="date" class="form-control" value="{{ queried_date }}">
+                {% endif %}
+            </div>
+            <button type="submit" name="submit_btn" class="btn btn-info" value="submitted"> Go! </button>
+        </form>
+        <form class="form-inline global-search">
+        <h1>{{output_message}}</h1>
+        {% if data %}
+            </form>
+            <div class="container">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Concert</th>
+                    <th></th>
+                    <th>Date</th>
+                    <th>Venue</th>
+                    <th>City</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for concert in data %}  
+                    <tr>
+                        <td><img src="{{ concert.image }}" style="width: 100px; height: 60px"></td>
+                        <td><a href="{{ concert.link }}">{{ concert.name }}</a></td>
+                        <td>{{ concert.date }} {{ concert.time }}</td>
+                        <td>{{ concert.venue }}</td>
+                        <td>{{ concert.city }}, {{ concert.state }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        {% endif %}
+    </body>
+</html>
