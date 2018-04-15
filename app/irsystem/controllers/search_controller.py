@@ -3,8 +3,12 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 import csv
 import math
+import sys  
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 project_name = "ConcertMaster"
 net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan Pan: ldp54, Rachel Kwak sk2472"
