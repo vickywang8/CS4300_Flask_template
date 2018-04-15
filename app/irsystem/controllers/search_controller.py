@@ -6,6 +6,7 @@ import math
 import sys  
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
+from nltk.stem import PorterStemmer
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -16,18 +17,22 @@ net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan
 tokenizer = TreebankWordTokenizer()
 all_talks = {}
 
+stemmer=PorterStemmer()
+
 with open('ted_main.csv') as csvfile:
 	reader = csv.DictReader(csvfile)
 	i = 0
 	for row in reader:
 		all_talks[i] = {"title": row['title'], 
 					   "description": row['description'],
-					   "score": "0", 
 					   "speaker": row['main_speaker'], 
 					   "tags": row["tags"], 
 					   "url": row["url"], 
 					   "views": row['views']}
 		i += 1
+
+# def getstems(sent):
+#     return [stemmer.stem(w.lower()) for w in word_splitter.findall(sent)]
 
 def build_inverted_index(msgs):
     index = defaultdict(list)
@@ -36,16 +41,16 @@ def build_inverted_index(msgs):
         
         # Counter to count all occurences of word in tokenized message
         description = msgs[i]['description']
-        counts = Counter(tokenizer.tokenize(description.lower()))
+        stemmed_counts = Counter([stemmer.stem(word) for word in tokenizer.tokenize(description.lower())])
         
         # Add to dictionary
-        for word in counts:
-            index[word].append((i, counts[word]))
+        for word in stemmed_counts:
+            index[word].append((i, stemmed_counts[word]))
             
     return index
 
 
-def compute_idf(inv_idx, n_docs, min_df=10, max_df_ratio=0.95):
+def compute_idf(inv_idx, n_docs, min_df=1, max_df_ratio=0.80):
     idf = {}
     
     for word, idx in inv_idx.items():
@@ -79,7 +84,7 @@ def index_search(query, index, idf, doc_norms):
     results = np.zeros(len(doc_norms))
     
     # Tokenize query
-    q = tokenizer.tokenize(query.lower())
+    q = [stemmer.stem(word) for word in tokenizer.tokenize(query.lower())]
     q_weights = {}
     
     for term in q:
@@ -114,7 +119,7 @@ def index_search(query, index, idf, doc_norms):
     return results[::-1]
 
 inv_idx = build_inverted_index(all_talks)
-idf = compute_idf(inv_idx, len(all_talks), min_df=10,  max_df_ratio=0.1)
+idf = compute_idf(inv_idx, len(all_talks))
 
 # prune the terms left out by idf
 inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
@@ -130,7 +135,6 @@ def search():
 	else:
 		top_10 = index_search(query, inv_idx, idf, doc_norms)[:10]
 		for score, doc_id in top_10:
-			all_talks[doc_id]["score"] = str(score)
 			data.append(all_talks[doc_id])
 		output_message = "Your search: " + query
 	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
