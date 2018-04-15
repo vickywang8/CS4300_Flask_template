@@ -145,9 +145,12 @@ def search():
             data = author_talks
         if len(data) < 5:
             num_additional = 5 - len(data)
-            top_n = index_search(query, inv_idx, idf, doc_norms)[:num_additional]
-            for score, doc_id in top_n:
-                data.append(all_talks[doc_id])
+
+            #this is a hacky solution: I always prepare 5 extra search results
+            top_5 = index_search(query, inv_idx, idf, doc_norms)[:5]
+            for score, doc_id in top_5:
+                if all_talks[doc_id] not in data and len(data) < 5:
+                    data.append(all_talks[doc_id])
 
         output_message = "Your search: " + query
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
