@@ -7,6 +7,7 @@ import sys
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
+import io
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -31,9 +32,6 @@ with open('ted_main.csv') as csvfile:
 					   "views": row['views']}
 		i += 1
 
-# def getstems(sent):
-#     return [stemmer.stem(w.lower()) for w in word_splitter.findall(sent)]
-
 def build_inverted_index(msgs):
     index = defaultdict(list)
     
@@ -41,7 +39,7 @@ def build_inverted_index(msgs):
         
         # Counter to count all occurences of word in tokenized message
         description = msgs[i]['description']
-        stemmed_counts = Counter([stemmer.stem(word) for word in tokenizer.tokenize(description.lower())])
+        stemmed_counts = Counter([stemmer.stem(word.decode('utf-8')) for word in tokenizer.tokenize(description.lower())])
         
         # Add to dictionary
         for word in stemmed_counts:
@@ -84,7 +82,7 @@ def index_search(query, index, idf, doc_norms):
     results = np.zeros(len(doc_norms))
     
     # Tokenize query
-    q = [stemmer.stem(word) for word in tokenizer.tokenize(query.lower())]
+    q = [stemmer.stem(word.decode('utf-8')) for word in tokenizer.tokenize(query.lower())]
     q_weights = {}
     
     for term in q:
