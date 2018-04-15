@@ -116,6 +116,13 @@ def index_search(query, index, idf, doc_norms):
 
     return results[::-1]
 
+def search_by_author(name, all_talks):
+    talks_by_author = []
+    for key, value in all_talks.items():
+        if value["speaker"].lower() == name.lower():
+            talks_by_author.append(value)
+    return talks_by_author
+
 inv_idx = build_inverted_index(all_talks)
 idf = compute_idf(inv_idx, len(all_talks))
 
@@ -126,13 +133,22 @@ doc_norms = compute_doc_norms(inv_idx, idf, len(all_talks))
 
 @irsystem.route('/', methods=['GET'])
 def search():
-	query = request.args.get('search')
-	data = []
-	if not query:
-		output_message = ''
-	else:
-		top_10 = index_search(query, inv_idx, idf, doc_norms)[:10]
-		for score, doc_id in top_10:
-			data.append(all_talks[doc_id])
-		output_message = "Your search: " + query
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+    query = request.args.get('search')
+    data = []
+    if not query:
+	   output_message = ''
+    else:
+        author_talks = search_by_author(query, all_talks)
+        if len(author_talks) != 0:
+            data = author_talks
+        if len(data) < 5:
+            num_additional = 5 - len(data)
+
+            #this is a hacky solution: I always prepare 5 extra search results
+            top_5 = index_search(query, inv_idx, idf, doc_norms)[:5]
+            for score, doc_id in top_5:
+                if all_talks[doc_id] not in data and len(data) < 5:
+                    data.append(all_talks[doc_id])
+
+        output_message = "Your search: " + query
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
