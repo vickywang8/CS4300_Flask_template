@@ -47,6 +47,7 @@
                 {% for talk in data %}  
                     <tr>
                         <td><a href="{{ talk.url }}">{{ talk.title }}</a></td>
+                        <td>{{ talk.score }}</td>
                         <td>{{ talk.description }}</td>
                         <td>{{ talk.speaker }}</td>
                         <td>{{ talk.tags }}</td>

@@ -17,7 +17,8 @@ with open('ted_main.csv') as csvfile:
 	i = 0
 	for row in reader:
 		all_talks[i] = {"title": row['title'], 
-					   "description": row['description'], 
+					   "description": row['description'],
+					   "score": "0", 
 					   "speaker": row['main_speaker'], 
 					   "tags": row["tags"], 
 					   "url": row["url"], 
@@ -125,6 +126,7 @@ def search():
 	else:
 		top_10 = index_search(query, inv_idx, idf, doc_norms)[:10]
 		for score, doc_id in top_10:
+			all_talks[doc_id]["score"] = str(score)
 			data.append(all_talks[doc_id])
 		output_message = "Your search: " + query
 	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
