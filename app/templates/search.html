@@ -65,13 +65,17 @@
                                   x: xValue,
                                   y: yValue,
                                   type: 'bar',
-                                  // text: yValue,
+                                  //text: yValue,
                                   // textposition: 'auto',
-                                  hoverinfo: 'x',
+                                  hoverinfo: 'x+y',
                                   hoverlabel: {
                                     font: {
-                                        family: "Arial"
-                                    }
+                                        family: "Arial",
+                                        color: '#FFFFFF'
+                                    },
+                                    bgcolor: 'rgb(51,51,51)',
+                                    bordercolor: 'rgb(51,51,51)'
+
                                   },
                                   marker: {
                                     color: 'rgb(207,65,65)',
@@ -80,6 +84,7 @@
 
                                 var data = [trace1];
                                 var layout = {
+                                    hovermode: 'closest',
                                     autosize: false,
                                     width: 450,
                                     height: 200,
