@@ -70,12 +70,13 @@ a:hover {
     color: #CF4141 !important;
 }
 .label {
+	float: left;
+	margin: 2px;
+	display: inline-block !important;
 	background-color: #E62B1E !important;
 	padding: .2em .3em !important
 }
 td {
 	padding: 15px !important;
 }
-span {
-	padding: 2px !important;
-}
+
