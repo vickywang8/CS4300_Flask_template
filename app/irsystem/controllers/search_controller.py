@@ -7,7 +7,7 @@ import sys
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
-import io
+import ast
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -24,12 +24,22 @@ with open('ted_main.csv') as csvfile:
 	reader = csv.DictReader(csvfile)
 	i = 0
 	for row in reader:
+		ratings = ast.literal_eval(row['ratings'][1:][:-1])
+		#list of name, count tuples
+		name_count_list = [(rating["name"], rating["count"]) for rating in ratings]
+		rating_names = []
+		rating_counts = []
+		for rating in sorted(name_count_list):
+			rating_names.append(rating[0])
+			rating_counts.append(rating[1])
 		all_talks[i] = {"title": row['title'], 
 					   "description": row['description'],
 					   "speaker": row['main_speaker'], 
-					   "tags": row["tags"], 
+					   "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
 					   "url": row["url"], 
-					   "views": row['views']}
+					   "views": row['views'],
+					   "rating_names": rating_names,
+					   "rating_counts": rating_counts}
 		i += 1
 
 def build_inverted_index(msgs):
@@ -150,5 +160,6 @@ def search():
                 if all_talks[doc_id] not in data and len(data) < 5:
                     data.append(all_talks[doc_id])
 
-        output_message = "Your search: " + query
+        output_message = "You searched for " + query
+    print(data)
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
