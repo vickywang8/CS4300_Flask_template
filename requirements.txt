@@ -28,7 +28,6 @@ MarkupSafe==0.23
 marshmallow==2.7.3
 marshmallow-sqlalchemy==0.8.1
 mysql-connector==2.1.4
-nltk==3.2.5
 numpy==1.14.2
 packaging==16.8
 psycopg2==2.7.4
@@ -43,6 +42,7 @@ pytz==2016.4
 redis==2.10.5
 requests==2.13.0
 scikit-learn==0.18.1
+setuptools=39.0.1
 six==1.10.0
 SQLAlchemy==1.0.13
 Werkzeug==0.11.9
