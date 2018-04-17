@@ -161,6 +161,6 @@ def search():
                 if all_talks[doc_id] not in data and len(data) < 5:
                     data.append(all_talks[doc_id])
 
-        output_message = "You searched for " + query
+        output_message = "You searched for \"" + query + "\""
     print(data)
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
