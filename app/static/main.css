@@ -9,8 +9,8 @@ padding: 20px 0;
 text-align:center;
 }
 body {
-padding-top: 15%;
 padding-bottom: 15px;
+background-color: #E5E5E5;
 }
 .global-search {
 text-align:center;
@@ -30,9 +30,53 @@ top:2%;
 right:2%;
 }
 .btn{
-background-color: #4285F4;
-border: none
+background-color: #E62B1E !important;
+font-weight: bold !important;
+border: 1px solid red !important;
+letter-spacing: 1px !important;
+color: #E5E5E5 !important;
+}
+.form-control {
+background-color: #E5E5E5 !important;
+}
+::placeholder{
+	color: #545454 !important;
 }
 .step-links a{
 color: #4285F4;
 }
+.jumbotron {
+padding-bottom: 120px !important;
+background-image: url("microphone_new.jpg");
+background-size: cover;
+opacity: .98;
+}
+
+th {
+	color: #E62B1E;
+}
+.global-search{
+margin-top: 50px;
+}
+
+/*.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #EAC0C0;
+}*/
+a {
+	color: #333 !important;
+}
+a:hover {
+    text-decoration: none !important;
+    color: #CF4141 !important;
+}
+.label {
+	float: left;
+	margin: 2px;
+	display: inline-block !important;
+	background-color: #E62B1E !important;
+	padding: .2em .3em !important
+}
+td {
+	padding: 15px !important;
+}
+
