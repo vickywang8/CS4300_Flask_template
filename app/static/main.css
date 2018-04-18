@@ -24,11 +24,6 @@ display:inline-block;
 margin-bottom:0;
 }
 }
-.topcorner{
-position:absolute;
-top:2%;
-right:2%;
-}
 .btn{
 background-color: #E62B1E !important;
 font-weight: bold !important;
@@ -57,6 +52,11 @@ th {
 }
 .global-search{
 margin-top: 50px;
+}
+.bottomcorner{
+position:absolute;
+bottom:2%;
+left:2%;
 }
 
 /*.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
