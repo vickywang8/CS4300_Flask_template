@@ -1,12 +1,10 @@
-from . import *  
-from app.irsystem.models.helpers import *
-from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 import csv
 import math
 import sys  
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
+import numpy as np
 import ast
 
 ##
@@ -22,26 +20,26 @@ all_talks = {}
 stemmer=PorterStemmer()
 
 with open('ted_main.csv') as csvfile:
-	reader = csv.DictReader(csvfile)
-	i = 0
-	for row in reader:
-		ratings = ast.literal_eval(row['ratings'][1:][:-1])
-		#list of name, count tuples
-		name_count_list = [(rating["name"], rating["count"]) for rating in ratings]
-		rating_names = []
-		rating_counts = []
-		for rating in sorted(name_count_list):
-			rating_names.append(rating[0])
-			rating_counts.append(rating[1])
-		all_talks[i] = {"title": row['title'], 
-					   "description": row['description'],
-					   "speaker": row['main_speaker'], 
-					   "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
-					   "url": row["url"], 
-					   "views": row['views'],
-					   "rating_names": rating_names,
-					   "rating_counts": rating_counts}
-		i += 1
+    reader = csv.DictReader(csvfile)
+    i = 0
+    for row in reader:
+        ratings = ast.literal_eval(row['ratings'][1:][:-1])
+        #list of name, count tuples
+        name_count_list = [(rating["name"], rating["count"]) for rating in ratings]
+        rating_names = []
+        rating_counts = []
+        for rating in sorted(name_count_list):
+            rating_names.append(rating[0])
+            rating_counts.append(rating[1])
+        all_talks[i] = {"title": row['title'], 
+                       "description": row['description'],
+                       "speaker": row['main_speaker'], 
+                       "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
+                       "url": row["url"], 
+                       "views": row['views'],
+                       "rating_names": rating_names,
+                       "rating_counts": rating_counts}
+        i += 1
 
 def build_inverted_index(msgs):
     index = defaultdict(list)
@@ -87,7 +85,6 @@ def compute_doc_norms(index, idf, n_docs):
                 norms[doc_id] += (tf*idf[word])** 2
         
     return np.sqrt(norms)
-
 
 def index_search(query, index, idf, doc_norms):     
     results = np.zeros(len(doc_norms))
@@ -136,31 +133,26 @@ def search_by_author(name, all_talks):
 
 inv_idx = build_inverted_index(all_talks)
 idf = compute_idf(inv_idx, len(all_talks))
+talk_titles = []
+for talk_id, talk in all_talks.items():
+    talk_titles.append(talk["title"])
 
-# prune the terms left out by idf
-inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
+def svd_decomposition(inv_idx, idf):
+    doc_word_counts = np.zeros([ len(all_talks), len(inv_idx) ])
+    list_inv_index = list(inv_idx.items())
+    vocabulary = []
 
-doc_norms = compute_doc_norms(inv_idx, idf, len(all_talks))
+    for word_id in range(len(list_inv_index)):
+        word, postings = list_inv_index[word_id]
+        vocabulary.append(word)
+        for d_id, tf in postings:
+            doc_word_counts[d_id, word_id] = tf*idf[word]
+    return np.linalg.svd(doc_word_counts, full_matrices=False)
 
-@irsystem.route('/', methods=['GET'])
-def search():
-    query = request.args.get('search')
-    data = []
-    if not query:
-	   output_message = ''
-    else:
-        author_talks = search_by_author(query, all_talks)
-        if len(author_talks) != 0:
-            data = author_talks
-        if len(data) < 5:
-            num_additional = 5 - len(data)
+def sort_vector(v, names):
+    sorted_list = sorted(list(zip(v, names)))
+    for pair in sorted_list[:10]:
+        print(pair)
+    for pair in sorted_list[-10:]:
+        print(pair)
 
-            #this is a hacky solution: I always prepare 5 extra search results
-            top_5 = index_search(query, inv_idx, idf, doc_norms)[:5]
-            for score, doc_id in top_5:
-                if all_talks[doc_id] not in data and len(data) < 5:
-                    data.append(all_talks[doc_id])
-
-        output_message = "You searched for \"" + query + "\""
-    print(data)
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
