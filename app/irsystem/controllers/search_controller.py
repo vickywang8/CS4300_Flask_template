@@ -1,13 +1,13 @@
 from . import *  
 from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
-import csv
 import math
 import sys  
-from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
 import ast
+import pickle
+import time
 
 ##
 reload(sys)  
@@ -17,93 +17,53 @@ project_name = "RecommenTED"
 net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan Pan: ldp54, Rachel Kwak sk2472"
 
 tokenizer = TreebankWordTokenizer()
-all_talks = {}
 
 stemmer=PorterStemmer()
 
-with open('new_transcripts.csv', 'rb') as transcript_file:
-    transcript_reader = csv.reader(transcript_file)
-    transcript_url_dict = dict(transcript_reader)
+start_time = time.time()
 
-with open('new_descriptions.csv', 'rb') as description_file:
-    description_reader = csv.reader(description_file)
-    description_url_dict = dict(description_reader)
+with open('new_transcripts.pickle', 'rb') as transcript_handle:
+	print("new_transcripts.pickle --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	transcript_url_dict = pickle.load(transcript_handle)
 
-with open('ted_main.csv') as csvfile:
-	reader = csv.DictReader(csvfile)
-	i = 0
-	for row in reader:
-		ratings = ast.literal_eval(row['ratings'][1:][:-1])
-		#list of name, count tuples
-		name_count_list = [(rating["name"], rating["count"]) for rating in ratings]
-		rating_names = []
-		rating_counts = []
-		for rating in sorted(name_count_list):
-			rating_names.append(rating[0])
-			rating_counts.append(rating[1])
-		all_talks[i] = {"title": row['title'], 
-					   "description": (row["description"], "" if row['url'] not in description_url_dict else description_url_dict[row['url']]),
-					   "speaker": row['main_speaker'], 
-					   "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
-					   "url": row["url"], 
-                       "transcript": "" if row['url'] not in transcript_url_dict else transcript_url_dict[row['url']],
-					   "views": row['views'],
-					   "rating_names": rating_names,
-					   "rating_counts": rating_counts}
-		i += 1
+with open('new_descriptions.pickle', 'rb') as description_handle:
+	print("new_descriptions --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	description_url_dict = pickle.load(description_handle)
 
-def build_inverted_index(msgs, text_data_type):
-    index = defaultdict(list)
-    
-    for i in range(0, len(msgs)):
-        
-        # Counter to count all occurences of word in tokenized message
-        if text_data_type == "description":
-            if msgs[i][text_data_type][1] == "":
-                text_data = msgs[i][text_data_type][0]
-            else:
-                text_data = msgs[i][text_data_type][1]
-        else:
-            text_data = msgs[i][text_data_type]
-        stemmed_counts = Counter(tokenizer.tokenize(text_data.lower()))
-        
-        # Add to dictionary
-        for word in stemmed_counts:
-            index[word].append((i, stemmed_counts[word]))
-            
-    return index
+with open('all_talks.pickle') as all_talks_handle:
+	print("all_talks --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	all_talks = pickle.load(all_talks_handle)
 
+with open('inv_idx_transcript.pickle', 'rb') as inv_transcript_handle:
+	print("inv_idx_transcript --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	inv_idx_transcript = pickle.load(inv_transcript_handle)
 
-def compute_idf(inv_idx, n_docs, min_df=1, max_df_ratio=0.80):
-    idf = {}
-    
-    for word, idx in inv_idx.items():
-        word_docs = len(idx)
-        
-        # Word in too few documents
-        if word_docs < min_df:
-            continue
-        # Word in > 95% docs
-        elif word_docs/n_docs > max_df_ratio:
-            continue
-        else:
-            idf[word] = math.log(n_docs/(1+word_docs), 2)
-    
-    return idf
+with open('inv_idx_description.pickle', 'rb') as inv_description_handle:
+	print("inv_idx_description --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	inv_idx_description = pickle.load(inv_description_handle)
 
+with open('idf_transcript.pickle', 'rb') as idf_transcript_handle:
+	print("idf_transcript --- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	idf_transcript = pickle.load(idf_transcript_handle)
 
-def compute_doc_norms(index, idf, n_docs):
-    norms = np.zeros(n_docs)
-    
-    for word, idx in index.items():
-        # print(word)
-        # print(type(idx))
-        for doc_id, tf in idx:
-            # Make sure word has not been pruned
-            if word in idf:
-                norms[doc_id] += (tf*idf[word])** 2
-        
-    return np.sqrt(norms)
+with open('idf_description.pickle', 'rb') as idf_description_handle:
+	print("--- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	idf_description = pickle.load(idf_description_handle)
+
+with open('doc_norms_transcript.pickle', 'rb') as doc_norms_transcript_handle:
+	print("--- %s seconds ---" % (time.time()-start_time))
+	start_time = time.time()
+	doc_norms_transcript = pickle.load(doc_norms_transcript_handle)
+
+with open('doc_norms_description.pickle', 'rb') as doc_norms_description_handle:
+    doc_norms_description = pickle.load(doc_norms_description_handle)
 
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))
@@ -152,20 +112,6 @@ def search_by_author(name, all_talks):
         if value["speaker"].lower() == name.lower():
             talks_by_author.append(value)
     return talks_by_author
-
-inv_idx_transcript = build_inverted_index(all_talks, "transcript")
-# print(inv_idx_transcript)
-inv_idx_description = build_inverted_index(all_talks, "description")
-# print(inv_idx_description)
-idf_transcript = compute_idf(inv_idx_transcript, len(all_talks))
-idf_description = compute_idf(inv_idx_description, len(all_talks))
-
-# prune the terms left out by idf
-inv_idx_transcript = {key: val for key, val in inv_idx_transcript.items() if key in idf_transcript}
-inv_idx_description = {key: val for key, val in inv_idx_description.items() if key in idf_description}
-
-doc_norms_transcript = compute_doc_norms(inv_idx_transcript, idf_transcript, len(all_talks))
-doc_norms_description = compute_doc_norms(inv_idx_description, idf_description, len(all_talks))
 
 @irsystem.route('/', methods=['GET'])
 def search():

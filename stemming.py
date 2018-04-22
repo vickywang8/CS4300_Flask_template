@@ -3,6 +3,7 @@ from nltk.stem import PorterStemmer
 
 import csv
 import sys  
+import pickle
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -27,7 +28,5 @@ with open('transcripts.csv') as transcript_file:
         		continue
         url_transcripts_dict[t_row["url"]] = new_transcript
 
-with open("new_transcripts.csv", "w") as resultFile:
-    writer = csv.writer(resultFile)
-    for key, value in url_transcripts_dict.items():
-    	writer.writerow([key, value])
+with open("new_transcripts.pickle", "wb") as handle:
+    pickle.dump(url_transcripts_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
