@@ -185,7 +185,7 @@ def svd_decomposition(inv_idx, idf):
     #             out.write("{:.6f}\t".format(word_vectors[word_id,i]))
     #         out.write("{}\n".format(vocabulary[word_id]))
     
-    return red_lsa
+    return similarity
 
 def sort_vector(v, names):
     sorted_list = sorted(list(zip(v, names)))
