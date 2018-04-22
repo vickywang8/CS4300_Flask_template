@@ -6,6 +6,11 @@ from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
 import numpy as np
 import ast
+from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import Normalizer
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 ##
 reload(sys)  
@@ -147,7 +152,40 @@ def svd_decomposition(inv_idx, idf):
         vocabulary.append(word)
         for d_id, tf in postings:
             doc_word_counts[d_id, word_id] = tf*idf[word]
-    return np.linalg.svd(doc_word_counts, full_matrices=False)
+    # modified from http://www.datascienceassn.org/sites/default/files/users/user1/lsa_presentation_final.pdf
+    lsa = TruncatedSVD(200, algorithm = 'randomized')
+    red_lsa = lsa.fit_transform(doc_word_counts)
+    red_lsa = Normalizer(copy=False).fit_transform(red_lsa)
+    similarity = np.asarray(np.asmatrix(red_lsa) * np.asmatrix(red_lsa).T)
+    print(similarity)
+    print(similarity.diagonal())
+    #(file_vectors, weights, word_vectors) = np.linalg.svd(doc_word_counts, full_matrices=False)
+    # word_vectors = word_vectors.T
+    # print(file_vectors.shape)
+    # print(weights.shape)
+    # print(word_vectors.shape)
+    # print(doc_word_counts[0])
+    # with open("file_vectors.tsv", "w") as out:
+    #     for i in range(len(file_vectors[0,:])):
+    #         out.write("V{}\t".format(i))
+    #     out.write("Title\n")
+        
+    #     for talk_id in range(len(talk_titles)):
+    #         for i in range(len(file_vectors[talk_id,:])):
+    #             out.write("{:.6f}\t".format(file_vectors[talk_id,i]))
+    #         out.write("{}\n".format(all_talks[talk_id]))
+
+    # with open("word_vectors.tsv", "w") as out:
+    #     for i in range(len(word_vectors[0,:])):
+    #         out.write("V{}\t".format(i))
+    #     out.write("Word\n")
+        
+    #     for word_id in range(len(vocabulary)):
+    #         for i in range(len(word_vectors[word_id,:])):
+    #             out.write("{:.6f}\t".format(word_vectors[word_id,i]))
+    #         out.write("{}\n".format(vocabulary[word_id]))
+    
+    return similarity
 
 def sort_vector(v, names):
     sorted_list = sorted(list(zip(v, names)))
