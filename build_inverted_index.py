@@ -20,28 +20,37 @@ with open('new_transcripts.pickle', 'rb') as transcript_handle:
 with open('new_descriptions.pickle', 'rb') as description_handle:
     description_url_dict = pickle.load(description_handle)
 
-with open('ted_main.csv') as csvfile:
-	reader = csv.DictReader(csvfile)
-	i = 0
-	for row in reader:
-		ratings = ast.literal_eval(row['ratings'][1:][:-1])
-		#list of name, count tuples
-		name_count_list = [(rating["name"], rating["count"]) for rating in ratings]
-		rating_names = []
-		rating_counts = []
-		for rating in sorted(name_count_list):
-			rating_names.append(rating[0])
-			rating_counts.append(rating[1])
-		all_talks[i] = {"title": row['title'], 
-					   "description": (row["description"], "" if row['url'] not in description_url_dict else description_url_dict[row['url']]),
-					   "speaker": row['main_speaker'], 
-					   "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
-					   "url": row["url"], 
+with open('ted_talks_ratings.csv') as csvfile:
+    reader = csv.DictReader(csvfile)
+    i = 0
+    for row in reader:
+
+        all_talks[i] = {"title": row['title'], 
+                       "description": (row["description"], "" if row['url'] not in description_url_dict else description_url_dict[row['url']]),
+                       "speaker": row['main_speaker'], 
+                       "tags": [word.strip('\'').strip(" ").strip('\'') for word in row["tags"][1:][:-1].split(",")], 
+                       "url": row["url"], 
                        "transcript": "" if row['url'] not in transcript_url_dict else transcript_url_dict[row['url']],
-					   "views": row['views'],
-					   "rating_names": rating_names,
-					   "rating_counts": rating_counts}
-		i += 1
+                       "views": row['views'],
+                       #"rating_names": rating_names,
+                       #"rating_counts": rating_counts,
+                       # Ratings
+                       "Beautiful": row['Beautiful'],
+                       "Confusing": row['Confusing'],
+                       "Courageous": row['Courageous'],
+                       "Funny": row['Funny'],
+                       "Informative": row['Informative'],
+                       "Ingenious": row['Ingenious'],
+                       "Inspiring": row['Inspiring'],
+                       "Longwinded": row['Longwinded'],
+                       "Unconvincing": row['Unconvincing'],
+                       "Fascinating": row['Fascinating'],
+                       "Jawdropping": row['Jaw-dropping'],
+                       "Persuasive": row['Persuasive'],
+                       "OK": row['OK'],
+                       "Obnoxious": row['Obnoxious']
+                       }
+        i += 1
 
 def build_inverted_index(msgs, text_data_type):
     index = defaultdict(list)

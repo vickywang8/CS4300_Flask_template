@@ -52,7 +52,85 @@
                             <span class="label label-default">{{tag}}</span>
                         {% endfor %}
                         </td>
+                        <td>
+                        <div id="{{ loop.index }}"></div>
+                            <script>
+                                data = [{
+                                  type: 'scatterpolar',
+                                  name:'User Ratings',
+                                  r: [{{talk.Beautiful}}, 
+                                      {{talk.Confusing}},
+                                      {{talk.Courageous}},
+                                      {{talk.Funny}},
+                                      {{talk.Informative}},
+                                      {{talk.Ingenious}},
+                                      {{talk.Inspiring}},
+                                      {{talk.Longwinded}},
+                                      {{talk.Unconvincing}},
+                                      {{talk.Fascinating}},
+                                      {{talk.Jawdropping}},
+                                      {{talk.Persuasive}},
+                                      {{talk.OK}},
+                                      {{talk.Obnoxious}}
+                                     ],
+                                  theta: ['Beautiful',
+                                          'Confusing',
+                                          'Courageous', 
+                                          'Funny', 
+                                          'Informative', 
+                                          'Ingenious',
+                                          'Inspiring',
+                                          'Longwinded', 
+                                          'Unconvincing', 
+                                          'Fascinating', 
+                                          'Jaw-dropping',
+                                          'Persuasive',
+                                          'OK',
+                                          'Obnoxious'
+                                          ],
+                                  fill: 'toself',
+                                  line: {color: 'rgb(207,65,65)'},
+                                  hoverlabel: {
+                                    font: {
+                                        family: "Arial",
+                                        color: '#FFFFFF'
+                                    },
+                                    bordercolor: 'rgb(51,51,51)',
+                                    bgcolor: 'rgb(51,51,51)'
+                                  },
+                                  
+                                }]
 
+                                layout = {
+                                  width: 400,
+                                  height: 400,
+                                  margin: {
+                                    l: 70,
+                                    r: 60,
+                                    b: 15,
+                                    t: 15,
+                                    pad: 0
+                                    },                                  
+                                  polar: {
+                                    bgcolor: 'rgb(242, 242, 242)',
+                                    radialaxis: {
+                                      visible: true,
+                                      //max(data[0][r])
+                                      range: [0, 0.4],
+                                      tickfont: {size: 8},
+                                    },
+                                    angularaxis: {
+                                      tickfont: {size: 10},
+                                      dtick: 1
+                                    }
+                                  },
+                                  showlegend: false
+                                }
+
+                                Plotly.plot("{{ loop.index }}", data, layout, {displayModeBar: false}) 
+                            </script>
+                        </td>
+                        <!--
                         <td>
                         <div id="{{ loop.index }}"></div>
                             <script>
@@ -111,6 +189,7 @@
                                 Plotly.newPlot("{{ loop.index }}", data, layout, {displayModeBar: false});
                             </script>
                         </td>
+                    -->
                     </tr>
                 {% endfor %}
                 </tbody>
