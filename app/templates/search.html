@@ -47,7 +47,7 @@
                 <tbody>
                 {% for talk in data %}  
                     <tr>
-                        <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 0px; margin-bottom: 3px">{{ talk.title }}</h1></a><p style="font-style: italic;">{{talk.speaker}}</p><p style="font-size: 12px">{{ talk.description }}</p>
+                        <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 0px; margin-bottom: 3px">{{ talk.title }}</h1></a><p style="font-style: italic;">{{talk.speaker}}</p><p style="font-size: 12px">{{ talk.description[0] }}</p>
                         {% for tag in talk.tags %} 
                             <span class="label label-default">{{tag}}</span>
                         {% endfor %}
