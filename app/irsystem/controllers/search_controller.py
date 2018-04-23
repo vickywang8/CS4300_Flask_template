@@ -149,12 +149,12 @@ svd_similarity = svd(inv_idx_transcript, idf_transcript)
 
 @irsystem.route('/', methods=['GET'])
 def search():
-    query = request.args.get('search').strip()
+    query = request.args.get('search')
     data = []
     if query is None:
         output_message = ""
-    elif query == '':
-	   output_message = "Please enter a valid query"
+    elif not query:
+        output_message = "Please enter a valid query"
     else:
         author_talks = search_by_author(query, all_talks)
         if len(author_talks) != 0:
@@ -167,12 +167,12 @@ def search():
             for score, doc_id in top_5:
                 if all_talks[doc_id] not in data and len(data) < 5:
                     data.append(all_talks[doc_id])
-
+            print top_5[0][0]
             if top_5[0][0] == 0:
                 output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
             else:
                 output_message = "You searched for \"" + query + "\""
 
         output_message = "You searched for \"" + query + "\""
-    print(data)
+    # print(data)
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
