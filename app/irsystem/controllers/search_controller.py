@@ -77,6 +77,9 @@ with open('data/clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId
     print("tedId_to_clusterId2 --- %s seconds ---" % (time.time()-start_time))
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
+print("svd_similarity --- %s seconds ---" % (time.time()-start_time))
+svd_similarity = np.load("svd_similarity.pickle")
+
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))
     for term in q:
@@ -125,23 +128,6 @@ def search_by_author(name, all_talks):
             talks_by_author.append(value)
     return talks_by_author
 
-def svd(inv_idx, idf):
-	doc_word_counts = np.zeros([ len(all_talks), len(inv_idx) ])
-	list_inv_index = list(inv_idx.items())
-	for word_id in range(len(list_inv_index)):
-		word, postings = list_inv_index[word_id]
-		for d_id, tf in postings:
-			doc_word_counts[d_id, word_id] = tf*idf[word]
-	# modified from http://www.datascienceassn.org/sites/default/files/users/user1/lsa_presentation_final.pdf
-	lsa = TruncatedSVD(200, algorithm = 'randomized')
-	red_lsa = lsa.fit_transform(doc_word_counts)
-	#print(red_lsa)
-	red_lsa = Normalizer(copy=False).fit_transform(red_lsa)
-	#print(red_lsa)
-	similarity = np.asarray(np.asmatrix(red_lsa) * np.asmatrix(red_lsa).T)
-	#print(similarity)
-	#print(similarity.diagonal())
-	return similarity
 
 def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, cluster_len):
     similarity_list = []
@@ -156,8 +142,6 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, clus
         top_docs.append(doc_id)
         similarity_list.remove((score, doc_id))
     return top_docs
-
-svd_similarity = svd(inv_idx_transcript, idf_transcript)
 
 @irsystem.route('/', methods=['GET'])
 def search():
@@ -175,8 +159,6 @@ def search():
         if len(author_talks) != 0:
             data = author_talks
         if len(data) < 10:
-
-            #this is a hacky solution: I always prepare 5 extra search results
             top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
 
             # Get cluster from top document
@@ -218,5 +200,5 @@ def search():
                 output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
             else:
                 output_message = "You searched for \"" + query + "\""
-    # print(data)
+
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
