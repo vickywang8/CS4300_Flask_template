@@ -158,6 +158,11 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, clus
 def sortData(data, sort_criteria):
     if sort_criteria == "None":
         return data
+    elif sort_criteria == "views":
+        for talk in data:
+            talk[sort_criteria] = int(talk[sort_criteria])
+        data = sorted(data, key=itemgetter(sort_criteria), reverse=True)
+        return data
     else:
         data = sorted(data, key=itemgetter(sort_criteria), reverse=True)
         return data
