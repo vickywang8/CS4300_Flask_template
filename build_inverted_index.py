@@ -74,7 +74,7 @@ def build_inverted_index(msgs, text_data_type):
     return index
 
 
-def compute_idf(inv_idx, n_docs, min_df=1, max_df_ratio=0.80):
+def compute_idf(inv_idx, n_docs, min_df=10, max_df_ratio=0.80):
     idf = {}
     
     for word, idx in inv_idx.items():
