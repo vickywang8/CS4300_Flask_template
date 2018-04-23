@@ -170,6 +170,40 @@ def search_by_author(name, all_talks):
             talks_by_author.append(value)
     return talks_by_author
 
+def svd(inv_idx, idf):
+	doc_word_counts = np.zeros([ len(all_talks), len(inv_idx) ])
+    list_inv_index = list(inv_idx.items())
+    vocabulary = []
+
+    for word_id in range(len(list_inv_index)):
+        word, postings = list_inv_index[word_id]
+        vocabulary.append(word)
+        for d_id, tf in postings:
+            doc_word_counts[d_id, word_id] = tf*idf[word]
+    # modified from http://www.datascienceassn.org/sites/default/files/users/user1/lsa_presentation_final.pdf
+    lsa = TruncatedSVD(200, algorithm = 'randomized')
+    red_lsa = lsa.fit_transform(doc_word_counts)
+    #print(red_lsa)
+    red_lsa = Normalizer(copy=False).fit_transform(red_lsa)
+    #print(red_lsa)
+    similarity = np.asarray(np.asmatrix(red_lsa) * np.asmatrix(red_lsa).T)
+    #print(similarity)
+    #print(similarity.diagonal())
+    return similarity
+
+svd_similarity = svd(inv_idx, idf)
+
+def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity):
+	similarity_list = []
+	for doc_id in cluster:
+		similarity_list.append((svd_similarity[target_id, doc_id], doc_id))
+	top_5 = []
+	while len(top_5)<5:
+		score, doc_id = max(similarity_list)
+		top_5.append(doc_id)
+		similarity_list.remove((score, doc_id))
+	return top_5
+
 inv_idx_transcript = build_inverted_index(all_talks, "transcript")
 # print(inv_idx_transcript)
 inv_idx_description = build_inverted_index(all_talks, "description")
@@ -205,4 +239,4 @@ def search():
 
         output_message = "You searched for \"" + query + "\""
     print(data)
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)

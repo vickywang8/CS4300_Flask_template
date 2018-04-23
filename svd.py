@@ -155,7 +155,9 @@ def svd_decomposition(inv_idx, idf):
     # modified from http://www.datascienceassn.org/sites/default/files/users/user1/lsa_presentation_final.pdf
     lsa = TruncatedSVD(200, algorithm = 'randomized')
     red_lsa = lsa.fit_transform(doc_word_counts)
+    print(red_lsa)
     red_lsa = Normalizer(copy=False).fit_transform(red_lsa)
+    print(red_lsa)
     similarity = np.asarray(np.asmatrix(red_lsa) * np.asmatrix(red_lsa).T)
     print(similarity)
     print(similarity.diagonal())
