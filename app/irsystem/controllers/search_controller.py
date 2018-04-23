@@ -7,7 +7,7 @@ import sys
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
 import ast
-import pickle
+import cPickle as pickle
 import time
 import numpy as np
 from operator import itemgetter
