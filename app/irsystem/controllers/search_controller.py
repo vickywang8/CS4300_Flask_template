@@ -9,6 +9,7 @@ import ast
 import pickle
 import time
 import numpy as np
+from operator import itemgetter
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
 
@@ -143,9 +144,17 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, clus
         similarity_list.remove((score, doc_id))
     return top_docs
 
+def sortData(data, sort_criteria):
+    if sort_criteria == "None":
+        return data
+    else:
+        data = sorted(data, key=itemgetter(sort_criteria), reverse=True)
+        return data
+
 @irsystem.route('/', methods=['GET'])
 def search():
     query = request.args.get('search')
+    sortBy = request.args.get('sortBy')
     data = []
     similar_talks = []
     cluster_res = []
@@ -178,7 +187,6 @@ def search():
                 if all_talks[doc_id] not in data and len(data) < 10:
                     data.append(all_talks[doc_id])
                     similar_talks.append(all_talks[doc_id])
-                    num_additional += 1
 
             # User searches by authoer
             if len(author_talks) != 0:
@@ -195,6 +203,8 @@ def search():
             else:
                 sim_talks_add = 10 - len(cluster_res)
                 data = similar_talks[0:sim_talks_add] + cluster_res
+
+            data = sortData(data, str(sortBy))
 
             if top_10[0][0] == 0:
                 output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
