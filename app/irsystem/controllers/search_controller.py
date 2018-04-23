@@ -235,6 +235,8 @@ def search():
             sim_talks_add = 10 - len(cluster_res)
             data = similar_talks[0:sim_talks_add] + cluster_res
 
+        data = sortData(data, sortBy)
+
         if top_10[0][0] == 0:
             output_message = "No results for \"" + query + "\". Here are some suggested videos to watch"
         else:
