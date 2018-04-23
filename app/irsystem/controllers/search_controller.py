@@ -163,6 +163,9 @@ svd_similarity = svd(inv_idx_transcript, idf_transcript)
 def search():
     query = request.args.get('search')
     data = []
+    similar_talks = []
+    cluster_res = []
+    author_talks = []
     if query is None:
         output_message = ""
     elif not query:
@@ -186,22 +189,34 @@ def search():
                 top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, svd_similarity, cluster_lst_len)
                 # May be the case that there is less than 5 docs in cluster
                 for doc_id in top_cluster_talks:
-                    if all_talks[doc_id] not in data and len(data) < 10:
-                        data.append(all_talks[doc_id])
-
-            num_additional = 10 - len(data)
-            blurb_talks = []
+                    if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
+                        cluster_res.append(all_talks[doc_id])
 
             for score, doc_id in top_10:
-                if all_talks[doc_id] not in data and num_additional < 10:
-                    blurb_talks.append(all_talks[doc_id])
+                if all_talks[doc_id] not in data and len(data) < 10:
+                    data.append(all_talks[doc_id])
+                    similar_talks.append(all_talks[doc_id])
                     num_additional += 1
 
-            data = blurb_talks + data
+            # User searches by authoer
+            if len(author_talks) != 0:
+                # Not enough results in cluster
+                if (5 + len(author_talks) < len(cluster_res)):
+                    sim_talks_add = 10 - len(author_talks) - len(cluster_res)
+                    clus_talks_add = len(cluster_res)
+                # Enough results in cluster
+                else:
+                    sim_talks_add = 10 - len(author_talks)
+                    clus_talks_add = 10 - len(author_talks) - sim_talks_add
+                data = author_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
+            # User searches by content
+            else:
+                sim_talks_add = 10 - len(cluster_res)
+                data = similar_talks[0:sim_talks_add] + cluster_res
 
-            if top_5[0][0] == 0:
+            if top_10[0][0] == 0:
                 output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
             else:
                 output_message = "You searched for \"" + query + "\""
-    print(data)
+    # print(data)
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
