@@ -8,9 +8,7 @@ import numpy as np
 import ast
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+
 
 ##
 reload(sys)  

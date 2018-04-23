@@ -3,6 +3,7 @@ from nltk.stem import PorterStemmer
 
 import csv
 import sys  
+import pickle
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -25,7 +26,5 @@ with open('ted_main.csv') as csvfile:
 				new_description += word
 		url_description_dict[row["url"]] = new_description
 
-with open("new_descriptions.csv", "w") as resultFile:
-    writer = csv.writer(resultFile)
-    for key, value in url_description_dict.items():
-    	writer.writerow([key, value])
+with open("new_descriptions.pickle", "wb") as handle:
+    pickle.dump(url_description_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)

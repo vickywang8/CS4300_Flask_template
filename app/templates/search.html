@@ -51,7 +51,8 @@
                 <tbody>
                 {% for talk in data %}  
                     <tr>
-                        <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 0px; margin-bottom: 3px">{{ talk.title }}</h1></a><p style="font-style: italic;">{{talk.speaker}}</p><p style="font-size: 12px">{{ talk.description[0] }}</p>
+                        <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 50px; margin-bottom: 3px">{{ talk.title }}</h1></a><p style="font-style: italic;">{{talk.speaker}}</p><p style="font-size: 13px">{{ talk.description[0] }}</p>
+                        <p style="color:#cf4141;"><strong><script>document.write({{talk.views}}..toLocaleString());</script></strong> views</p>
                         {% for tag in talk.tags %} 
                             <span class="label label-default">{{tag}}</span>
                         {% endfor %}
@@ -59,10 +60,7 @@
                         <td>
                         <div id="{{ loop.index }}"></div>
                             <script>
-                                data = [{
-                                  type: 'scatterpolar',
-                                  name:'User Ratings',
-                                  r: [{{talk.Beautiful}}, 
+                                var lst = [{{talk.Beautiful}}, 
                                       {{talk.Confusing}},
                                       {{talk.Courageous}},
                                       {{talk.Funny}},
@@ -76,21 +74,25 @@
                                       {{talk.Persuasive}},
                                       {{talk.OK}},
                                       {{talk.Obnoxious}}
-                                     ],
+                                     ];
+                                data = [{
+                                  type: 'scatterpolar',
+                                  name:'User Ratings',
+                                  r: lst,
                                   theta: ['Beautiful',
-                                          'Confusing',
-                                          'Courageous', 
+                                          '       Confusing',
+                                          '      Courageous', 
                                           'Funny', 
                                           'Informative', 
-                                          'Ingenious',
-                                          'Inspiring',
+                                          'Ingenious   ',
+                                          'Inspiring     ',
                                           'Longwinded', 
-                                          'Unconvincing', 
-                                          'Fascinating', 
+                                          'Unconvincing            ', 
+                                          'Fascinating    ', 
                                           'Jaw-dropping',
                                           'Persuasive',
                                           'OK',
-                                          'Obnoxious'
+                                          '        Obnoxious'
                                           ],
                                   fill: 'toself',
                                   line: {color: 'rgb(207,65,65)'},
@@ -106,21 +108,20 @@
                                 }]
 
                                 layout = {
-                                  width: 400,
-                                  height: 400,
+                                  width: 350,
+                                  height: 350,
                                   margin: {
                                     l: 70,
-                                    r: 60,
-                                    b: 15,
-                                    t: 15,
+                                    r: 55,
+                                    b: 0,
+                                    t: 0,
                                     pad: 0
                                     },                                  
                                   polar: {
                                     bgcolor: 'rgb(242, 242, 242)',
                                     radialaxis: {
                                       visible: true,
-                                      //max(data[0][r])
-                                      range: [0, 0.4],
+                                      range: [0, Math.max(lst)],
                                       tickfont: {size: 8},
                                     },
                                     angularaxis: {
