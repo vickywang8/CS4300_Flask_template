@@ -48,6 +48,7 @@
                 {% for talk in data %}  
                     <tr>
                         <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 50px; margin-bottom: 3px">{{ talk.title }}</h1></a><p style="font-style: italic;">{{talk.speaker}}</p><p style="font-size: 13px">{{ talk.description[0] }}</p>
+                        <p style="color:#cf4141;"><strong><script>document.write({{talk.views}}..toLocaleString());</script></strong> views</p>
                         {% for tag in talk.tags %} 
                             <span class="label label-default">{{tag}}</span>
                         {% endfor %}
