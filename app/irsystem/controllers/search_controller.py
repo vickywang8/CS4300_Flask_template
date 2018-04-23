@@ -169,9 +169,8 @@ def search():
         author_talks = search_by_author(query, all_talks)
         title_talks = search_by_title(query, all_talks)
 
-        # if len(author_talks) != 0:
-        #     data = author_talks
-        # if len(data) < 10:
+        data = author_talks + title_talks
+
         top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
 
         # Get cluster from top document
