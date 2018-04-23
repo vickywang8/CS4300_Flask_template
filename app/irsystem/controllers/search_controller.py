@@ -163,8 +163,10 @@ svd_similarity = svd(inv_idx_transcript, idf_transcript)
 def search():
     query = request.args.get('search')
     data = []
-    if not query:
-	   output_message = ''
+    if query is None:
+        output_message = ""
+    elif not query:
+        output_message = "Please enter a valid query"
     else:
         author_talks = search_by_author(query, all_talks)
         if len(author_talks) != 0:
@@ -197,6 +199,9 @@ def search():
 
             data = blurb_talks + data
 
-        output_message = "You searched for \"" + query + "\""
+            if top_5[0][0] == 0:
+                output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
+            else:
+                output_message = "You searched for \"" + query + "\""
     print(data)
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
