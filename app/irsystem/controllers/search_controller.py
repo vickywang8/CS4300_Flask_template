@@ -178,7 +178,6 @@ def search():
                 if all_talks[doc_id] not in data and len(data) < 10:
                     data.append(all_talks[doc_id])
                     similar_talks.append(all_talks[doc_id])
-                    num_additional += 1
 
             # User searches by authoer
             if len(author_talks) != 0:
