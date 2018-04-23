@@ -23,7 +23,11 @@
             <br><br>
             
             <div class="form-group">
+            {% if query %}
+                <input id="input" type="text" name="search" class="form-control" value="{{query}}" style="color: #545454">
+            {% else %}
                 <input id="input" type="text" name="search" class="form-control" placeholder="What do you want to watch today?" style="color: #545454">
+            {% endif %}
             </div>
             <button type="submit" name="submit_btn" class="btn btn-info" value="submitted">
                 Search
