@@ -200,6 +200,8 @@ def search():
             for doc_id in top_cluster_talks:
                 if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
                     cluster_res.append(all_talks[doc_id])
+                    data.append(all_talks[doc_id])
+
 
         for score, doc_id in top_10:
             if all_talks[doc_id] not in data and len(data) < 10:
