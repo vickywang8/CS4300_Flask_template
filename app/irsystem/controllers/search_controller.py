@@ -188,6 +188,13 @@ def search():
 
         top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
 
+
+        for score, doc_id in top_10:
+            if all_talks[doc_id] not in data and len(data) < 10:
+                data.append(all_talks[doc_id])
+                similar_talks.append(all_talks[doc_id])
+
+
         # Get cluster from top document
         top_talk_id = top_10[0][1]
         cluster_id = tedId_to_clusterId[top_talk_id]
@@ -200,13 +207,6 @@ def search():
             for doc_id in top_cluster_talks:
                 if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
                     cluster_res.append(all_talks[doc_id])
-                    data.append(all_talks[doc_id])
-
-
-        for score, doc_id in top_10:
-            if all_talks[doc_id] not in data and len(data) < 10:
-                data.append(all_talks[doc_id])
-                similar_talks.append(all_talks[doc_id])
 
         # User searches by title
         if len(title_talks) != 0:
