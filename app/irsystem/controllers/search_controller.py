@@ -2,6 +2,7 @@ from . import *
 from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 import math
+import random
 import sys
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
@@ -119,6 +120,10 @@ def index_search(query, transcript_index, description_index, transcript_idf, des
     # sort results by score
     results.sort()
 
+    # if no relevant videos are found, return randomly sorted list of videos
+    if results[-1][0] == 0:
+        random.shuffle(results)
+
     return results[::-1]
 
 def search_by_author(name, all_talks):
@@ -128,6 +133,12 @@ def search_by_author(name, all_talks):
             talks_by_author.append(value)
     return talks_by_author
 
+def search_by_title(title, all_talks):
+    talk_titles = []
+    for key, value in all_talks.items():
+        if value['title'].lower() == title.lower():
+            talk_titles.append(value)
+    return talk_titles
 
 def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, cluster_len):
     similarity_list = []
@@ -156,48 +167,63 @@ def search():
         output_message = "Please enter a valid query"
     else:
         author_talks = search_by_author(query, all_talks)
-        if len(author_talks) != 0:
-            data = author_talks
-        if len(data) < 10:
-            top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
+        title_talks = search_by_title(query, all_talks)
 
-            # Get cluster from top document
-            top_talk_id = top_10[0][1]
-            cluster_id = tedId_to_clusterId[top_talk_id]
-            cluster_lst = clusterId_to_tedId[cluster_id]
-            cluster_lst_len = len(cluster_lst)
+        # if len(author_talks) != 0:
+        #     data = author_talks
+        # if len(data) < 10:
+        top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
 
-            if cluster_lst_len > 1:
-                top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, svd_similarity, cluster_lst_len)
-                # May be the case that there is less than 5 docs in cluster
-                for doc_id in top_cluster_talks:
-                    if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
-                        cluster_res.append(all_talks[doc_id])
+        # Get cluster from top document
+        top_talk_id = top_10[0][1]
+        cluster_id = tedId_to_clusterId[top_talk_id]
+        cluster_lst = clusterId_to_tedId[cluster_id]
+        cluster_lst_len = len(cluster_lst)
 
-            for score, doc_id in top_10:
-                if all_talks[doc_id] not in data and len(data) < 10:
-                    data.append(all_talks[doc_id])
-                    similar_talks.append(all_talks[doc_id])
+        if cluster_lst_len > 1:
+            top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, svd_similarity, cluster_lst_len)
+            # May be the case that there is less than 5 docs in cluster
+            for doc_id in top_cluster_talks:
+                if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
+                    cluster_res.append(all_talks[doc_id])
 
-            # User searches by authoer
-            if len(author_talks) != 0:
-                # Not enough results in cluster
-                if (5 + len(author_talks) < len(cluster_res)):
-                    sim_talks_add = 10 - len(author_talks) - len(cluster_res)
-                    clus_talks_add = len(cluster_res)
-                # Enough results in cluster
-                else:
-                    sim_talks_add = 10 - len(author_talks)
-                    clus_talks_add = 10 - len(author_talks) - sim_talks_add
-                data = author_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
-            # User searches by content
+        for score, doc_id in top_10:
+            if all_talks[doc_id] not in data and len(data) < 10:
+                data.append(all_talks[doc_id])
+                similar_talks.append(all_talks[doc_id])
+
+        # User searches by title
+        if len(title_talks) != 0:
+            # Not enough results in cluster
+            if (5 + len(title_talks) < len(cluster_res)):
+                sim_talks_add = 10 - len(title_talks) - len(cluster_res)
+                clus_talks_add = len(cluster_res)
+            # Enough results in cluster
             else:
-                sim_talks_add = 10 - len(cluster_res)
-                data = similar_talks[0:sim_talks_add] + cluster_res
+                sim_talks_add = 10 - len(title_talks)
+                clus_talks_add = 10 - len(title_talks) - sim_talks_add
+            data = title_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
 
-            if top_10[0][0] == 0:
-                output_message = "No results for \"" + query + "\", but here are videos you may be interested in"
+        # User searches by author
+        elif len(author_talks) != 0:
+            # Not enough results in cluster
+            if (5 + len(author_talks) < len(cluster_res)):
+                sim_talks_add = 10 - len(author_talks) - len(cluster_res)
+                clus_talks_add = len(cluster_res)
+            # Enough results in cluster
             else:
-                output_message = "You searched for \"" + query + "\""
+                sim_talks_add = 10 - len(author_talks)
+                clus_talks_add = 10 - len(author_talks) - sim_talks_add
+            data = author_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
+
+        # User searches by content
+        else:
+            sim_talks_add = 10 - len(cluster_res)
+            data = similar_talks[0:sim_talks_add] + cluster_res
+
+        if top_10[0][0] == 0:
+            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch"
+        else:
+            output_message = "You searched for \"" + query + "\""
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
