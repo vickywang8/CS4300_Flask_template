@@ -80,7 +80,7 @@ with open('data/clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
 print("svd_similarity --- %s seconds ---" % (time.time()-start_time))
-svd_similarity = np.load("svd_similarity.pickle")
+svd_similarity = np.load("svd_similarity.npy", mmap_mode='r')
 
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))

@@ -140,7 +140,7 @@ doc_norms_transcript = compute_doc_norms(inv_idx_transcript, idf_transcript, len
 doc_norms_description = compute_doc_norms(inv_idx_description, idf_description, len(all_talks))
 
 svd_similarity = svd(inv_idx_transcript, idf_transcript)
-svd_similarity.dump("svd_similarity.pickle")
+np.save("svd_similarity", svd_similarity)
 
 with open("all_talks.pickle", "wb") as handle:
     pickle.dump(all_talks, handle, protocol=pickle.HIGHEST_PROTOCOL)
