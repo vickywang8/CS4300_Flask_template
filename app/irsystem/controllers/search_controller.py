@@ -142,11 +142,15 @@ def search_by_title(title, all_talks):
             talk_titles.append(value)
     return talk_titles
 
-def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, cluster_len):
+def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
     similarity_list = []
+    if target_id > 1000:
+        svd_similarity = np.loadtxt("svd_similarity1.txt", delimiter=',', usecols=target_id, unpack=True)
+    else:
+        svd_similarity = np.loadtxt("svd_similarity2.txt", delimiter=',', usecols=target_id, unpack=True)
     for doc_id in cluster:
         if (doc_id != target_id):
-            similarity_list.append((svd_similarity[target_id, doc_id], doc_id))
+            similarity_list.append((svd_similarity[doc_id], doc_id))
 	top_docs = []
     # Subtract one to remove the target_id
     max_len = min(5, cluster_len - 1)
@@ -203,11 +207,12 @@ def search():
         cluster_lst_len = len(cluster_lst)
 
         if cluster_lst_len > 1:
-            top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, svd_similarity, cluster_lst_len)
-            # May be the case that there is less than 5 docs in cluster
-            for doc_id in top_cluster_talks:
-                if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
-                    cluster_res.append(all_talks[doc_id])
+        	similarity_list = []
+        	top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, cluster_lst_len)
+        	# May be the case that there is less than 5 docs in cluster
+        	for doc_id in top_cluster_talks:
+        		if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
+        			cluster_res.append(all_talks[doc_id])
 
         # User searches by title
         if len(title_talks) != 0:
