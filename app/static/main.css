@@ -17,10 +17,10 @@
   padding:10px;
   }
   .global-search .form-control {
-  width:500px;
+  width:400px;
   }
   .global-search * {
-  display:inline-block;
+  display:inline-flex;
   margin-bottom:0;
   }
 }
@@ -80,8 +80,19 @@ td {
 	padding: 0px;
 }
 
-.ratingsDropDown {
-  /*height: 50px;*/
-  /*overflow: scroll;*/
+.custom-select {
+  width:110px;
+  height: 34px;
+  padding: 0px 0px 0px 5px;
+  background-color: #E5E5E5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-left: 3px
+}
+
+.btn {
+  display: inline-flex;
+  height: 34px;
+  margin-left: 4px;
 }
 
