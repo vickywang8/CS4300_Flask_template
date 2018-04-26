@@ -158,7 +158,7 @@ svd_similarity = svd(tfidf)
 svd_similarity = scipy.sparse.csc_matrix(svd_similarity)
 # np.savetxt("svd_similarity1.txt", svd_similarity[:,:1000], delimiter=',')
 # np.savetxt("svd_similarity2.txt", svd_similarity[:,:-1000], delimiter=',')
-scipy.sparse.save_npz('/tmp/sparse_matrix.npz', svd_similarity)
+scipy.sparse.save_npz('sparse_matrix.npz', svd_similarity)
 
 with open("all_talks.pickle", "wb") as handle:
     pickle.dump(all_talks, handle, protocol=pickle.HIGHEST_PROTOCOL)
