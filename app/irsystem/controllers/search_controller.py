@@ -13,6 +13,8 @@ import numpy as np
 from operator import itemgetter
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
+from sklearn.decomposition import NMF
+import scipy.sparse
 
 ##
 reload(sys)
@@ -79,9 +81,9 @@ with open('data/clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId
     print("tedId_to_clusterId2 --- %s seconds ---" % (time.time()-start_time))
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
-# print("svd_similarity --- %s seconds ---" % (time.time()-start_time))
-# svd_similarity = np.load("svd_similarity.npy", mmap_mode='r')
-svd_similarity = [[]]
+svd_similarity = scipy.sparse.load_npz('/tmp/sparse_matrix.npz')
+print(svd_similarity)
+#svd_similarity = [[]]
 
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))
@@ -142,15 +144,15 @@ def search_by_title(title, all_talks):
             talk_titles.append(value)
     return talk_titles
 
-def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
+def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len, svd_similarity):
     similarity_list = []
-    if target_id > 1000:
-        svd_similarity = np.loadtxt("svd_similarity1.txt", delimiter=',', usecols=target_id, unpack=True)
-    else:
-        svd_similarity = np.loadtxt("svd_similarity2.txt", delimiter=',', usecols=target_id, unpack=True)
+    # if target_id > 1000:
+    #     svd_similarity = np.loadtxt("svd_similarity1.txt", delimiter=',', usecols=target_id, unpack=True)
+    # else:
+    #     svd_similarity = np.loadtxt("svd_similarity2.txt", delimiter=',', usecols=target_id, unpack=True)
     for doc_id in cluster:
         if (doc_id != target_id):
-            similarity_list.append((svd_similarity[doc_id], doc_id))
+            similarity_list.append((svd_similarity[target_id, doc_id], doc_id))
 	top_docs = []
     # Subtract one to remove the target_id
     max_len = min(5, cluster_len - 1)
@@ -208,7 +210,7 @@ def search():
 
         if cluster_lst_len > 1:
         	similarity_list = []
-        	top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, cluster_lst_len)
+        	top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, cluster_lst_len, svd_similarity)
         	# May be the case that there is less than 5 docs in cluster
         	for doc_id in top_cluster_talks:
         		if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:

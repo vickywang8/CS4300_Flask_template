@@ -9,6 +9,8 @@ import numpy as np
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
+from sklearn.decomposition import NMF
+import scipy.sparse
 
 ##
 reload(sys)  
@@ -107,16 +109,19 @@ def compute_doc_norms(index, idf, n_docs):
         
     return np.sqrt(norms)
 
-def svd(inv_idx, idf):
+def get_tfidf(inv_idx, idf):
   doc_word_counts = np.zeros([ len(all_talks), len(inv_idx) ])
   list_inv_index = list(inv_idx.items())
   for word_id in range(len(list_inv_index)):
     word, postings = list_inv_index[word_id]
     for d_id, tf in postings:
       doc_word_counts[d_id, word_id] = tf*idf[word]
+  return doc_word_counts
+
+def svd(tfidf):
   # modified from http://www.datascienceassn.org/sites/default/files/users/user1/lsa_presentation_final.pdf
   lsa = TruncatedSVD(200, algorithm = 'randomized')
-  red_lsa = lsa.fit_transform(doc_word_counts)
+  red_lsa = lsa.fit_transform(tfidf)
   #print(red_lsa)
   red_lsa = Normalizer(copy=False).fit_transform(red_lsa)
   #print(red_lsa)
@@ -124,6 +129,14 @@ def svd(inv_idx, idf):
   #print(similarity)
   #print(similarity.diagonal())
   return similarity
+
+def topic_modeling(tfidf):
+  num_topics = 25
+  nmf = NMF(n_components=num_topics,random_state=0)
+  topics = nmf.fit_transform(tfidf)
+  num_top_words = 10
+  print(nmf.components_)
+  return
 
 inv_idx_transcript = build_inverted_index(all_talks, "transcript")
 # print(inv_idx_transcript)
@@ -139,9 +152,13 @@ inv_idx_description = {key: val for key, val in inv_idx_description.items() if k
 doc_norms_transcript = compute_doc_norms(inv_idx_transcript, idf_transcript, len(all_talks))
 doc_norms_description = compute_doc_norms(inv_idx_description, idf_description, len(all_talks))
 
-svd_similarity = svd(inv_idx_transcript, idf_transcript)
-np.savetxt("svd_similarity1.txt", svd_similarity[:,:1000], delimiter=',')
-np.savetxt("svd_similarity2.txt", svd_similarity[:,:-1000], delimiter=',')
+tfidf = get_tfidf(inv_idx_transcript, idf_transcript)
+
+svd_similarity = svd(tfidf)
+svd_similarity = scipy.sparse.csc_matrix(svd_similarity)
+# np.savetxt("svd_similarity1.txt", svd_similarity[:,:1000], delimiter=',')
+# np.savetxt("svd_similarity2.txt", svd_similarity[:,:-1000], delimiter=',')
+scipy.sparse.save_npz('/tmp/sparse_matrix.npz', svd_similarity)
 
 with open("all_talks.pickle", "wb") as handle:
     pickle.dump(all_talks, handle, protocol=pickle.HIGHEST_PROTOCOL)
