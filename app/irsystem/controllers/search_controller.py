@@ -13,6 +13,8 @@ import numpy as np
 from operator import itemgetter
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
+from sklearn.decomposition import NMF
+import scipy.sparse
 
 ##
 reload(sys)
@@ -79,8 +81,9 @@ with open('clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId_hand
     print("tedId_to_clusterId2 --- %s seconds ---" % (time.time()-start_time))
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
-print("svd_similarity --- %s seconds ---" % (time.time()-start_time))
-svd_similarity = np.load("svd_similarity.pickle")
+#svd_similarity = scipy.sparse.load_npz('sparse_matrix.npz')
+#print(svd_similarity)
+#svd_similarity = [[]]
 
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))
@@ -141,11 +144,18 @@ def search_by_title(title, all_talks):
             talk_titles.append(value)
     return talk_titles
 
-def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, cluster_len):
+def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
     similarity_list = []
+    print(target_id)
+    if target_id < 1000:
+        svd_similarity = np.loadtxt("svd_similarity1.txt", delimiter=',', usecols=target_id, unpack=True)
+    else:
+    	target_id = target_id - 1000
+    	print(target_id)
+        svd_similarity = np.loadtxt("svd_similarity2.txt", delimiter=',', usecols=target_id, unpack=True)
     for doc_id in cluster:
         if (doc_id != target_id):
-            similarity_list.append((svd_similarity[target_id, doc_id], doc_id))
+            similarity_list.append((svd_similarity[doc_id], doc_id))
 	top_docs = []
     # Subtract one to remove the target_id
     max_len = min(5, cluster_len - 1)
@@ -153,6 +163,7 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, svd_similarity, clus
         score, doc_id = max(similarity_list)
         top_docs.append(doc_id)
         similarity_list.remove((score, doc_id))
+    print([all_talks[doc_id]["title"] for doc_id in top_docs])
     return top_docs
 
 def sortData(data, sort_criteria):
@@ -188,6 +199,13 @@ def search():
 
         top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
 
+
+        for score, doc_id in top_10:
+            if all_talks[doc_id] not in data and len(data) < 10:
+                data.append(all_talks[doc_id])
+                similar_talks.append(all_talks[doc_id])
+
+
         # Get cluster from top document
         top_talk_id = top_10[0][1]
         cluster_id = tedId_to_clusterId[top_talk_id]
@@ -195,16 +213,12 @@ def search():
         cluster_lst_len = len(cluster_lst)
 
         if cluster_lst_len > 1:
-            top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, svd_similarity, cluster_lst_len)
-            # May be the case that there is less than 5 docs in cluster
-            for doc_id in top_cluster_talks:
-                if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
-                    cluster_res.append(all_talks[doc_id])
-
-        for score, doc_id in top_10:
-            if all_talks[doc_id] not in data and len(data) < 10:
-                data.append(all_talks[doc_id])
-                similar_talks.append(all_talks[doc_id])
+        	similarity_list = []
+        	top_cluster_talks = get_docs_from_cluster(top_talk_id, cluster_lst, inv_idx_transcript, idf_transcript, cluster_lst_len)
+        	# May be the case that there is less than 5 docs in cluster
+        	for doc_id in top_cluster_talks:
+        		if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
+        			cluster_res.append(all_talks[doc_id])
 
         # User searches by title
         if len(title_talks) != 0:
@@ -234,6 +248,8 @@ def search():
         else:
             sim_talks_add = 10 - len(cluster_res)
             data = similar_talks[0:sim_talks_add] + cluster_res
+
+        data = sortData(data, sortBy)
 
         if top_10[0][0] == 0:
             output_message = "No results for \"" + query + "\". Here are some suggested videos to watch"

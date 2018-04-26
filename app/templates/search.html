@@ -24,7 +24,7 @@
             <h1 style="font-size: 65px; font-weight: bold; color: #E62B1E; font-family: 'Arial Black'">TED</h1>
 
             <br><br>
-
+            <span>
             <div class="form-group">
             {% if query %}
                 <input id="input" type="text" name="search" class="form-control" value="{{query}}" style="color: #545454">
@@ -33,7 +33,7 @@
             {% endif %}
             </div>
             <div class="input-group-prepend ratingsDropDown">
-              <select class="custom-select" name="sortBy">
+              <select class="custom-select" name="sortBy" >
               <option value="None" selected>Sort By</option>
                 <option value="views" href="#">Views</option>
                 <option value="Beautiful" href="#">Beautiful</option>
@@ -55,6 +55,7 @@
             <button type="submit" name="submit_btn" class="btn btn-info searchButton" value="submitted">
                 Search
             </button>
+            </span>
         </form>
         </div>
         <form class="form-inline global-search">
