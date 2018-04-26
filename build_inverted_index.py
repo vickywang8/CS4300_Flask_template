@@ -11,6 +11,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import Normalizer
 from sklearn.decomposition import NMF
 import scipy.sparse
+from sklearn.pipeline import Pipeline
 
 ##
 reload(sys)  
@@ -130,13 +131,24 @@ def svd(tfidf):
   #print(similarity.diagonal())
   return similarity
 
-def topic_modeling(tfidf):
-  num_topics = 25
+##code modified from https://www.kaggle.com/adelsondias/ted-talks-topic-models/notebook
+def topic_modeling(tfidf, idx):
+  num_topics = 100
   nmf = NMF(n_components=num_topics,random_state=0)
   topics = nmf.fit_transform(tfidf)
-  num_top_words = 10
-  print(nmf.components_)
-  return
+  topic_dict = {}
+  doc_topic_score = np.zeros([ len(tfidf), num_topics ])
+  for topic_id, lst in enumerate(nmf.components_):
+    top_ten = lst.argsort()[-10:]
+    top_ten = top_ten[::-1]
+    words = [idx[i] for i in top_ten]
+    topic_dict[topic_id] = words
+    for doc_id in all_talks.keys():
+      score = 0
+      for word_id in top_ten:
+        score+=tfidf[doc_id,word_id]
+      doc_topic_score[doc_id, topic_id] = score
+  return topic_dict, doc_topic_score
 
 inv_idx_transcript = build_inverted_index(all_talks, "transcript")
 # print(inv_idx_transcript)
@@ -153,12 +165,19 @@ doc_norms_transcript = compute_doc_norms(inv_idx_transcript, idf_transcript, len
 doc_norms_description = compute_doc_norms(inv_idx_description, idf_description, len(all_talks))
 
 tfidf = get_tfidf(inv_idx_transcript, idf_transcript)
+idx_transcript = {i: t for i, t in enumerate(inv_idx_transcript)}
 
 svd_similarity = svd(tfidf)
 #svd_similarity = scipy.sparse.csc_matrix(svd_similarity)
-np.savetxt("svd_similarity1.txt", svd_similarity[:,:1000], delimiter=',')
-np.savetxt("svd_similarity2.txt", svd_similarity[:,-(len(svd_similarity[0])-1000):], delimiter=',')
+# np.savetxt("svd_similarity1.txt", svd_similarity[:,:1000], delimiter=',')
+# np.savetxt("svd_similarity2.txt", svd_similarity[:,-(len(svd_similarity[0])-1000):], delimiter=',')
 #scipy.sparse.save_npz('sparse_matrix.npz', svd_similarity)
+np.save("svd_similarity", svd_similarity)
+
+topic_dict, doc_topic_score = topic_modeling(tfidf, idx_transcript)
+np.save("doc_topic_score", doc_topic_score)
+
+topic_name_dict = {0: "Self Reflection", 2: "Ants", 3: "Biology", 4: "Climate Change", 5: "Brain", 6: "Finance", 7: "Robots", 8: "Computer Security", 9: "Outer Space", 10: "Spiders", 11: "Mars", 12: "Galaxies", 13: "Viruses", 14: "Insects", 15: "Genetics", 16: "Water", 18: "Nuclear", 19: "Sea Life", 20: "Black Holes", 21: "Urban", 22: "Cancer", 23: "Gender", 24: "Coral Reefs", 26: "China", 29: "Refugees", 31: "Music", 32: "Gaming", 33: "War", 34: "Politics", 36: "Middle East", 37: "Africa", 38: "Sex Trade", 40: "Computers", 41: "Injuries", 42: "Geometry", 43: "Microbiology", 45: "Socioeconomic", 46: "Bacteria", 47: "Malaria", 48: "Fish", 50: "Disease", 51: "Food", 53: "Outdoors", 54: "Autism", 55: "India", 56: "Fireflies", 57: "Dinosaurs", 58: "Data", 59: "LGBTQ", 60: "Beetles", 61: "Donald Trump", 63: "String Theory", 64: "Addiction", 65: "Bats", 66: "Morality", 67: "Drugs", 68: "Prosthetics", 69: "Oil", 70: 'Quantum Mechanics', 71: 'Breast Cancer', 72: 'Particle Physics', 73: 'Art', 74: 'Hormones', 75: 'National Security', 76: 'Sleep', 77: 'Genes', 78: 'Forest', 79: 'Energy', 80: 'Healthcare', 81: 'Crime', 82: 'Patent', 83: 'Consciousness', 84: 'Stress', 85: 'Ebola', 86: 'Education', 87: 'Family', 88: 'Agriculture', 89: 'Laser', 90: 'Iran', 91: 'Banking', 92: 'Arctic', 93: 'Religion', 94: 'Antibiotics', 95: 'Language', 98: 'Car Accident', 99: 'Feminism'}
 
 with open("all_talks.pickle", "wb") as handle:
     pickle.dump(all_talks, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -180,6 +199,12 @@ with open("doc_norms_transcript.pickle", "wb") as handle:
 
 with open("doc_norms_description.pickle", "wb") as handle:
     pickle.dump(doc_norms_description, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+with open("topic_dict.pickle", "wb") as handle:
+    pickle.dump(topic_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+with open("topic_name_dict.pickle", "wb") as handle:
+    pickle.dump(topic_name_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 

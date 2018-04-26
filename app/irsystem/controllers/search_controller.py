@@ -81,9 +81,18 @@ with open('data/clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId
     print("tedId_to_clusterId2 --- %s seconds ---" % (time.time()-start_time))
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
+with open('topic_dict.pickle', 'rb') as topic_dict_handle:
+    print("topic_dict --- %s seconds ---" % (time.time()-start_time))
+    topic_dict = pickle.load(topic_dict_handle)
+
+with open('topic_name_dict.pickle', 'rb') as topic_name_dict_handle:
+    print("topic_name_dict --- %s seconds ---" % (time.time()-start_time))
+    topic_name_dict = pickle.load(topic_name_dict_handle)
 #svd_similarity = scipy.sparse.load_npz('sparse_matrix.npz')
 #print(svd_similarity)
 #svd_similarity = [[]]
+svd_similarity = np.load("svd_similarity.npy")
+doc_topic_score = np.load("doc_topic_score.npy")
 
 def compute_score(q, index, idf, doc_norms, q_weights):
     results = np.zeros(len(doc_norms))
@@ -146,16 +155,9 @@ def search_by_title(title, all_talks):
 
 def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
     similarity_list = []
-    print(target_id)
-    if target_id < 1000:
-        svd_similarity = np.loadtxt("svd_similarity1.txt", delimiter=',', usecols=target_id, unpack=True)
-    else:
-    	target_id = target_id - 1000
-    	print(target_id)
-        svd_similarity = np.loadtxt("svd_similarity2.txt", delimiter=',', usecols=target_id, unpack=True)
     for doc_id in cluster:
         if (doc_id != target_id):
-            similarity_list.append((svd_similarity[doc_id], doc_id))
+            similarity_list.append((svd_similarity[target_id, doc_id], doc_id))
 	top_docs = []
     # Subtract one to remove the target_id
     max_len = min(5, cluster_len - 1)
