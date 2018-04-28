@@ -33,8 +33,9 @@
             {% endif %}
             </div>
             <div class="input-group-prepend ratingsDropDown">
-              <select class="custom-select" name="sortBy" >
+              <select id="sort-item" class="custom-select" name="sortBy" >
               <option value="None" selected>Sort By</option>
+
                 <option value="views" href="#">Views</option>
                 <option value="Beautiful" href="#">Beautiful</option>
                 <option value="Confusing" href="#">Confusing</option>
@@ -61,7 +62,7 @@
         <form class="form-inline global-search">
 
         <div class="container">
-          <div class="row">
+          <div class="center">
             <h1>{{output_message}}</h1>
             {% if data %}
           </div>
@@ -163,78 +164,27 @@
                                 Plotly.plot("{{ loop.index }}", data, layout, {displayModeBar: false})
                             </script>
                         </td>
-                        <!--
-                        <td>
-                        <div id="{{ loop.index }}"></div>
-                            <script>
-                                var xValue = {{talk.rating_names | safe}}
-                                var yValue =  {{talk.rating_counts | safe}}
-                                var trace1 = {
-                                  x: xValue,
-                                  y: yValue,
-                                  type: 'bar',
-                                  //text: yValue,
-                                  // textposition: 'auto',
-                                  hoverinfo: 'x+y',
-                                  hoverlabel: {
-                                    font: {
-                                        family: "Arial",
-                                        color: '#FFFFFF'
-                                    },
-                                    bgcolor: 'rgb(51,51,51)',
-                                    bordercolor: 'rgb(51,51,51)'
-
-                                  },
-                                  marker: {
-                                    color: 'rgb(207,65,65)',
-                                  }
-                                };
-
-                                var data = [trace1];
-                                var layout = {
-                                    hovermode: 'closest',
-                                    autosize: false,
-                                    width: 450,
-                                    height: 200,
-                                    margin: {
-                                        l: 80,
-                                        r: 30,
-                                        b: 25,
-                                        t: 25,
-                                        pad: 0
-                                      },
-                                    xaxis: {
-                                        tickfont: {
-                                            size: 10
-                                        },
-                                        showticklabels: false,
-                                        fixedrange: true
-                                    },
-                                    yaxis: {
-                                        tickfont: {
-                                            size: 10
-                                        },
-                                        showticklabels: false,
-                                        showgrid: false,
-                                        fixedrange: true
-                                    }
-                                };
-                                Plotly.newPlot("{{ loop.index }}", data, layout, {displayModeBar: false});
-                            </script>
-                        </td>
-                    -->
                     </tr>
                 {% endfor %}
                 </tbody>
               </table>
             </div>
         {% endif %}
-
     </body>
-    <div class="bottomcorner" style="position: relative">
-            <p>Project Name: {{ name }}</p>
-            <br>
-            <p>Student Name: ({{ netid }})</p>
-        </div>
+    <div class="top_right">
+<!--       <p>Project Name: {{ name }}</p> -->
+      <p>Student Names: {{ netid }}</p>
+    </div>
+
+<!--   <script>  
+    window.onload = function() {
+    var selItem = sessionStorage.getItem("SelItem");  
+    $('#sort-item').val(selItem);
+    }
+    $('#sort-item').change(function() { 
+        var selVal = $(this).val();
+        sessionStorage.setItem("SelItem", selVal);
+    });  
+  </script> -->
 
 </html>

@@ -21,7 +21,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 project_name = "RecommenTED"
-net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan Pan: ldp54, Rachel Kwak sk2472"
+net_id = "Priyanka Rathnam (pcr43), Minzhi Wang (mw787), Emily Sun (eys27), Lillyan Pan (ldp54), Rachel Kwak (sk2472)"
 
 tokenizer = TreebankWordTokenizer()
 
@@ -254,7 +254,7 @@ def search():
         data = sortData(data, sortBy)
 
         if top_10[0][0] == 0:
-            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch"
+            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch:"
         else:
             output_message = "You searched for \"" + query + "\""
 
