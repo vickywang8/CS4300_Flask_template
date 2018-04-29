@@ -27,7 +27,7 @@
             <span>
             <div class="form-group">
             {% if query %}
-                <input id="input" type="text" name="search" class="form-control" value="{{query}}" style="color: #545454">
+                <input id="input" type="text" name="search" class="form-control" value="{{output_query}}" style="color: #545454">
             {% else %}
                 <input id="input" type="text" name="search" class="form-control" placeholder="What do you want to watch today?" style="color: #545454">
             {% endif %}
@@ -79,7 +79,9 @@
                 </thead>
                 <tbody>
                 {% for t in topics %}
-                 <button class="button" style="vertical-align:middle"><span>{{t}}</span></button>
+                <form>
+                 <button type="submit" name="topic_search" class="button" value="{{t}},{{query}}" style="vertical-align:middle"><span>{{t}}</span></button>
+                </form>
                 {% endfor %}
 
                 {% for talk in data %}

@@ -88,6 +88,11 @@ with open('topic_dict.pickle', 'rb') as topic_dict_handle:
 with open('topic_name_dict.pickle', 'rb') as topic_name_dict_handle:
     print("topic_name_dict --- %s seconds ---" % (time.time()-start_time))
     topic_name_dict = pickle.load(topic_name_dict_handle)
+
+with open('name_topic_dict.pickle', 'rb') as name_topic_dict_handle:
+    print("name_topic_dict --- %s seconds ---" % (time.time()-start_time))
+    name_topic_dict = pickle.load(name_topic_dict_handle)
+
 #svd_similarity = scipy.sparse.load_npz('sparse_matrix.npz')
 #print(svd_similarity)
 #svd_similarity = [[]]
@@ -165,7 +170,7 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
         score, doc_id = max(similarity_list)
         top_docs.append(doc_id)
         similarity_list.remove((score, doc_id))
-    print([all_talks[doc_id]["title"] for doc_id in top_docs])
+    #print([all_talks[doc_id]["title"] for doc_id in top_docs])
     return top_docs
 
 def sortData(data, sort_criteria):
@@ -184,17 +189,31 @@ def sortData(data, sort_criteria):
 def search():
     query = request.args.get('search')
     sortBy = request.args.get('sortBy')
+    topic_search = request.args.get('topic_search')
     data = []
     similar_talks = []
     cluster_res = []
     author_talks = []
     top_topics = []
+    output_query = ''
+
+    # Improve query from topic buttons
+    if topic_search is not None:
+        updated_query = topic_search.split(',')
+        topic_idx = name_topic_dict[updated_query[0]]
+        topic_stems = topic_dict[topic_idx]
+        updated_query = topic_stems + updated_query
+        new_query = ' '.join(updated_query)
+        query = new_query
+        # TODO: not sure if want to keep none
+        sortBy = "None"
 
     if query is None:
         output_message = ""
     elif not query:
         output_message = "Please enter a valid query"
     else:
+        output_query = query.split(' ')[-1]
         author_talks = search_by_author(query, all_talks)
 
         title_talks = search_by_title(query, all_talks)
@@ -275,7 +294,6 @@ def search():
         if top_10[0][0] == 0:
             output_message = "No results for \"" + query + "\". Here are some suggested videos to watch:"
         else:
-            output_message = "You searched for \"" + query + "\""
+            output_message = "You searched for \"" + output_query + "\""
 
-
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, topics=top_topics)
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, topics=top_topics, output_query=output_query)
