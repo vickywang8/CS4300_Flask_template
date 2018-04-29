@@ -62,12 +62,12 @@
         <form class="form-inline global-search">
 
         <div class="container">
-          <div class="center">
-            <h1><span>{{output_message}}</span></h1>
+            <h1 class="text-center" style = "margin-left: auto; margin-right: auto">{{output_message}}</h1>
             {% if data %}
-          </div>
         </div>
-
+        <div class="container">
+            <h4 class="text-center" style = "margin-left: auto; margin-right: auto; margin-top: 30px; color: #545454">Click to further expand your search</h4>
+        </div> 
             </form>
             <div class="container">
               <table class="table">
@@ -108,11 +108,7 @@
                                       {{talk.OK}},
                                       {{talk.Obnoxious}}
                                      ];
-                                data = [{
-                                  type: 'scatterpolar',
-                                  name:'User Ratings',
-                                  r: lst,
-                                  theta: ['Beautiful',
+                                var ratings = ['Beautiful',
                                           '       Confusing',
                                           '      Courageous',
                                           'Funny',
@@ -126,9 +122,36 @@
                                           'Persuasive',
                                           'OK',
                                           '        Obnoxious'
-                                          ],
+                                          ];
+                                // functional trim from https://stackoverflow.com/questions/35476948/remove-empty-or-whitespace-strings-from-array-javascript
+                                var ratings_stripped = ['Beautiful',
+                                          'Confusing',
+                                          'Courageous',
+                                          'Funny',
+                                          'Informative',
+                                          'Ingenious',
+                                          'Inspiring',
+                                          'Longwinded',
+                                          'Unconvincing',
+                                          'Fascinating',
+                                          'Jaw-dropping',
+                                          'Persuasive',
+                                          'OK',
+                                          'Obnoxious'
+                                          ]
+                                var txt = []
+                                for (i = 0; i < lst.length; i++){
+                                    txt.push(ratings_stripped[i]+ ": " + lst[i].toFixed(3).toString())
+                                }
+                                data = [{
+                                  type: 'scatterpolar',
+                                  name:'User Ratings',
+                                  r: lst,
+                                  theta: ratings,
+                                  text: txt,
                                   fill: 'toself',
                                   line: {color: 'rgb(207,65,65)'},
+                                  hoverinfo: "text",
                                   hoverlabel: {
                                     font: {
                                         family: "Arial",
@@ -176,10 +199,10 @@
         {% endif %}
 
     </body>
-    <div class="top_right">
-<!--       <p>Project Name: {{ name }}</p> -->
+<!--     <div class="top_right">
+      <p>Project Name: {{ name }}</p>
       <p>Student Names: {{ netid }}</p>
-    </div>
+    </div> -->
 
 <!--   <script>  
     window.onload = function() {
@@ -191,5 +214,9 @@
         sessionStorage.setItem("SelItem", selVal);
     });  
   </script> -->
-
+<footer>
+<div class="text-center" style= "color: #545454">
+        Priyanka Rathnam (pcr43) | Minzhi Wang (mw787) | Emily Sun (eys27) | Lillyan Pan (ldp54) | Rachel Kwak (sk247)
+    </div>
+</footer>
 </html>
