@@ -3,7 +3,7 @@ import math
 import sys  
 from collections import defaultdict, Counter
 from nltk.tokenize import TreebankWordTokenizer
-import ast
+import datetime
 import pickle
 import numpy as np
 import numpy as np
@@ -19,6 +19,7 @@ sys.setdefaultencoding('utf8')
 
 tokenizer = TreebankWordTokenizer()
 all_talks = {}
+month_num_to_abbr = {"1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "May", "6": "Jun", "7": "Jul", "8": "Aug", "9": "Sept", "10": "Oct", "11":"Nov", "12": "Dec"}
 
 with open('new_transcripts.pickle', 'rb') as transcript_handle:
     transcript_url_dict = pickle.load(transcript_handle)
@@ -30,7 +31,7 @@ with open('ted_talks_ratings.csv') as csvfile:
     reader = csv.DictReader(csvfile)
     i = 0
     for row in reader:
-
+        talk_time = datetime.datetime.fromtimestamp(int(row['published_date']))
         all_talks[i] = {"title": row['title'], 
                        "description": (row["description"], "" if row['url'] not in description_url_dict else description_url_dict[row['url']]),
                        "speaker": row['main_speaker'], 
@@ -38,6 +39,7 @@ with open('ted_talks_ratings.csv') as csvfile:
                        "url": row["url"], 
                        "transcript": "" if row['url'] not in transcript_url_dict else transcript_url_dict[row['url']],
                        "views": row['views'],
+                       "year": month_num_to_abbr[str(talk_time.month)] + " " + str(talk_time.year),
                        #"rating_names": rating_names,
                        #"rating_counts": rating_counts,
                        # Ratings
@@ -80,7 +82,7 @@ def build_inverted_index(msgs, text_data_type):
     return index
 
 
-def compute_idf(inv_idx, n_docs, min_df=10, max_df_ratio=0.80):
+def compute_idf(inv_idx, n_docs, min_df=5, max_df_ratio=0.80):
     idf = {}
     
     for word, idx in inv_idx.items():
