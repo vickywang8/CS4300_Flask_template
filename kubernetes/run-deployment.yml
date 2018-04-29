@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flask
-        image: vickywang/flask_template:v4
+        image: vickywang/flask-template:v6
         env:
         - name: APP_SETTINGS
           value: config.DevelopmentConfig
