@@ -21,7 +21,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 project_name = "RecommenTED"
-net_id = "Priyanka Rathnam: pcr43, Minzhi Wang: mw787, Emily Sun: eys27, Lillyan Pan: ldp54, Rachel Kwak sk2472"
+net_id = "Priyanka Rathnam (pcr43), Minzhi Wang (mw787), Emily Sun (eys27), Lillyan Pan (ldp54), Rachel Kwak (sk2472)"
 
 tokenizer = TreebankWordTokenizer()
 
@@ -188,6 +188,8 @@ def search():
     similar_talks = []
     cluster_res = []
     author_talks = []
+    top_topics = []
+
     if query is None:
         output_message = ""
     elif not query:
@@ -253,9 +255,27 @@ def search():
 
         data = sortData(data, sortBy)
 
+
+        # Topic modeling
+        # top_ids = [doc[1] for doc in top_10[:1]]
+        # # row_sum = np.sum(doc_topic_score, axis=1)
+        # # normalized = doc_topic_score/row_sum[:, np.newaxis]
+        # topic_lists = np.array([doc_topic_score[i] for i in top_ids])
+        # # 2d np array of scores for each top 10 doc sorted in descending order
+        # sorted_topics = np.argsort(topic_lists, axis=1)[::-1]
+        # # get indices of top 5 topics
+        # idx = np.argpartition(sorted_topics, sorted_topics.size-5, axis=None)[-5:]
+        # top_xy = [divmod(i, sorted_topics.shape[1]) for i in idx]
+        # topics_idx = [i[1] for i in top_xy]
+
+        # normalized = doc_topic_score[top_talk_id]/row_sum
+        topics_idx = np.argsort(doc_topic_score[top_talk_id])[::-1]
+        top_topics = [topic_name_dict[i] for i in topics_idx[:5] if i in topic_name_dict]
+
         if top_10[0][0] == 0:
-            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch"
+            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch:"
         else:
             output_message = "You searched for \"" + query + "\""
 
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
+
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, topics=top_topics)
