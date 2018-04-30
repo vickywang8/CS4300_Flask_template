@@ -20,6 +20,8 @@ import scipy.sparse
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+first_search = 0
+local = ''
 project_name = "RecommenTED"
 net_id = "Priyanka Rathnam (pcr43), Minzhi Wang (mw787), Emily Sun (eys27), Lillyan Pan (ldp54), Rachel Kwak (sk2472)"
 
@@ -197,10 +199,18 @@ def search():
     top_topics = []
     clus_talks_add = 0
     output_query = ''
+    global first_search
+    global local
 
     # Improve query from topic buttons
     if topic_search is not None:
         updated_query = topic_search.split(',')
+        if first_search == 0:
+            output_query = updated_query[1]
+            local = updated_query[1]
+            first_search = 1
+        else:
+            output_query = local
         topic_idx = name_topic_dict[updated_query[0]]
         topic_stems = topic_dict[topic_idx]
         updated_query = topic_stems + updated_query
@@ -208,13 +218,27 @@ def search():
         query = new_query
         # TODO: not sure if want to keep none
         sortBy = "None"
+    else:
+        output_query = query
+        first_search = 0 
+
+    # print("______FIRST SEARCH_______")
+    # print(first_search)
+
+    # print("______QUERY_______")
+    # print(query)
+
+    # print("______OUTPUT QUERY_______")
+    # print(output_query)
+
+    # print("______LOCAL_______")
+    # print(local)
 
     if query is None:
         output_message = ""
     elif not query:
         output_message = "Please enter a valid query"
     else:
-        output_query = query.split(' ')[-1]
         author_talks = search_by_author(query, all_talks)
 
         title_talks = search_by_title(query, all_talks)
@@ -283,7 +307,7 @@ def search():
             data = similar_talks[0:sim_talks_add] + cluster_res
 
         data = sortData(data, sortBy)
-        print(clus_talks_add)
+        #print(clus_talks_add)
 
 
         # Topic modeling
@@ -291,14 +315,11 @@ def search():
         # row_sum = np.sum(doc_topic_score, axis=1)
         # normalized = doc_topic_score/row_sum[:, np.newaxis]
         topic_lists = np.array([doc_topic_score[i] for i in top_ids])
-        # 2d np array of scores for each top 10 doc sorted in descending order
-        # sorted_topics = np.argsort(topic_lists, axis=1)[::-1]
         # get indices of top 5 topics
         idx = np.argpartition(topic_lists, topic_lists.size-5, axis=None)[-5:]
         top_xy = [divmod(i, topic_lists.shape[1]) for i in idx]
         topics_idx = [i[1] for i in top_xy]
 
-        # normalized = doc_topic_score[top_talk_id]/row_sum
         #topics_idx = np.argsort(doc_topic_score[top_talk_id])[::-1]
         top_topics = [topic_name_dict[i] for i in set(topics_idx[:5]) if i in topic_name_dict]
 
