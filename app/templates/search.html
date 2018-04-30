@@ -64,7 +64,7 @@
                   <tr>
                     <th class="col-sm-3" style="font-size: 17px; padding: 0px 0px 13px 0px; color:#333">
                       {% if sortBy != "None" %}
-                        Sorted by: {{sortBy}}
+                        Sorted by: {{sortBy.title()}}
                       {% endif %}
                     </th>
                     <th class="col-sm-1">
@@ -73,7 +73,7 @@
                            <select id="sort-item" class="custom-select" name="sortBy" onchange = 'this.form.submit();'>
                             <option value="None" selected>Sort By</option>
 
-                            <option value="Views" href="#">Views</option>
+                            <option value="views" href="#">Views</option>
                             <option value="Beautiful" href="#">Beautiful</option>
                             <option value="Confusing" href="#">Confusing</option>
                             <option value="Courageous" href="#">Courageous</option>
