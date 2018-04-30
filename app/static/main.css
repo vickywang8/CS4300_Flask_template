@@ -6,31 +6,31 @@
 }
 @media (min-width:400px){
   .global-search {
-  padding: 20px 0;
-  text-align:center;
+    padding: 20px 0;
+    text-align:center;
   }
   body {
-  padding-bottom: 15px;
-  background-color: #E5E5E5;
+    padding-bottom: 15px;
+    background-color: #E5E5E5;
   }
   .global-search {
-  text-align:center;
-  padding:10px;
+    text-align:center;
+    padding:10px;
   }
   .global-search .form-control {
-  width:400px;
+    width:400px;
   }
   .global-search * {
-  display:inline-flex;
-  margin-bottom:0;
+    display:inline-flex;
+    margin-bottom:0;
   }
 }
 .searchButton{
-background-color: #E62B1E !important;
-font-weight: bold !important;
-border: 1px solid red !important;
-letter-spacing: 1px !important;
-color: #E5E5E5 !important;
+  background-color: #E62B1E !important;
+  font-weight: bold !important;
+  border: 1px solid red !important;
+  letter-spacing: 1px !important;
+  color: #E5E5E5 !important;
 }
 .form-control {
 background-color: #E5E5E5 !important;
@@ -39,30 +39,30 @@ background-color: #E5E5E5 !important;
 	color: #545454 !important;
 }
 .step-links a{
-color: #4285F4;
+  color: #4285F4;
 }
 .jumbotron {
-padding-bottom: 120px !important;
-background-image: url("microphone_new.jpg");
-background-size: cover;
-opacity: .93;
+  padding-bottom: 120px !important;
+  background-image: url("microphone_new.jpg");
+  background-size: cover;
+  opacity: .93;
 }
 
 th {
 	color: #E62B1E;
 }
 .global-search{
-margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 .top_right{
-position: absolute;
-top: 10px;
-right: 10px;
-width: 800px;
-text-align:right;
-color: #E5E5E5;
-display: block !important;
-font-size: 13px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 800px;
+  text-align:right;
+  color: #E5E5E5;
+  display: block !important;
+  font-size: 13px;
 }
 
 a {
@@ -179,8 +179,10 @@ body {
   height: 45px;
   padding-top: 13px;
   color: #E5E5E5;
-
 }
 .table {
 	margin-bottom: 60px !important;
+}
+.protolink {
+  color: white !important;
 }
