@@ -237,7 +237,7 @@ def search():
     if query is None:
         output_message = ""
     elif not query:
-        output_message = "Please enter a valid query"
+        output_message = "Please enter a valid query."
     else:
         author_talks = search_by_author(query, all_talks)
 
@@ -324,8 +324,8 @@ def search():
         top_topics = [topic_name_dict[i] for i in set(topics_idx[:5]) if i in topic_name_dict]
 
         if top_10[0][0] == 0:
-            output_message = "No results for \"" + query + "\". Here are some suggested videos to watch:"
+            output_message = "No results for \"" + query + "\". Here are some suggested videos."
         else:
-            output_message = "You searched for \"" + output_query + "\""
+            output_message = "You searched for \"" + output_query + "\"."
 
     return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, topics=top_topics, output_query=output_query)
