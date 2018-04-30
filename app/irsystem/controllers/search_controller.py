@@ -189,6 +189,7 @@ def search():
     cluster_res = []
     author_talks = []
     top_topics = []
+    clus_talks_add = 0
 
     if query is None:
         output_message = ""
@@ -202,7 +203,6 @@ def search():
         data = author_talks + title_talks
 
         top_10 = index_search(query, inv_idx_transcript, inv_idx_description, idf_transcript, idf_description, doc_norms_transcript, doc_norms_description)[:10]
-
 
         for score, doc_id in top_10:
             if all_talks[doc_id] not in data and len(data) < 10:
@@ -224,6 +224,16 @@ def search():
         		if all_talks[doc_id] not in data and all_talks[doc_id] not in top_10:
         			cluster_res.append(all_talks[doc_id])
 
+        # Add Talk Types
+        for talk in author_talks:
+            talk['type'] = 'author'
+        for talk in title_talks:
+            talk['type'] = 'title'
+        for talk in similar_talks:
+            talk['type'] = 'text'
+        for talk in cluster_res:
+            talk['type'] = 'cluster'
+
         # User searches by title
         if len(title_talks) != 0:
             # Not enough results in cluster
@@ -232,7 +242,7 @@ def search():
                 clus_talks_add = len(cluster_res)
             # Enough results in cluster
             else:
-                sim_talks_add = 10 - len(title_talks)
+                sim_talks_add = min(10 - len(title_talks),5)
                 clus_talks_add = 10 - len(title_talks) - sim_talks_add
             data = title_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
 
@@ -244,7 +254,7 @@ def search():
                 clus_talks_add = len(cluster_res)
             # Enough results in cluster
             else:
-                sim_talks_add = 10 - len(author_talks)
+                sim_talks_add = min(10 - len(author_talks),5)
                 clus_talks_add = 10 - len(author_talks) - sim_talks_add
             data = author_talks + similar_talks[0:sim_talks_add] + cluster_res[0:clus_talks_add]
 
@@ -254,6 +264,7 @@ def search():
             data = similar_talks[0:sim_talks_add] + cluster_res
 
         data = sortData(data, sortBy)
+        print(clus_talks_add)
 
 
         # Topic modeling

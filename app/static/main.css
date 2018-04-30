@@ -72,12 +72,19 @@ a:hover {
     text-decoration: none !important;
     color: #CF4141 !important;
 }
-.label {
+.talks {
 	float: left;
 	margin: 2px;
 	display: inline-block !important;
 	background-color: #E62B1E !important;
 	padding: .2em .3em !important
+}
+
+.clusterLab {
+  float: left;
+  display: inline-block !important;
+  margin-right: 5px;
+  margin-top: 2px;
 }
 td {
 	padding: 0px;
