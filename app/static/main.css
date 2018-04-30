@@ -33,7 +33,7 @@ letter-spacing: 1px !important;
 color: #E5E5E5 !important;
 }
 .form-control {
-background-color: #E5E5E5 !important;
+background-color: white !important;
 }
 ::placeholder{
 	color: #545454 !important;
@@ -97,7 +97,7 @@ td {
   width:110px;
   height: 34px;
   padding: 0px 0px 0px 5px;
-  background-color: #E5E5E5;
+  background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-left: 3px
