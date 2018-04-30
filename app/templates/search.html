@@ -34,7 +34,7 @@
         </style>
     </head>
     <body>
-
+    <div class="wrapper">
         <div class="jumbotron text-center">
 
         <form class="global-search">
@@ -79,14 +79,14 @@
             </span>
         </form>
         </div>
-        <form class="form-inline global-search">
 
         <div class="container">
             <h1 class="text-center" style = "margin-left: auto; margin-right: auto">{{output_message}}</h1>
-            {% if data %}
         </div>
+        {% if data %}
+        <form class="form-inline global-search">
         <div class="container">
-            <h4 class="text-center" style = "margin-left: auto; margin-right: auto; margin-top: 30px; color: #545454">Click to further expand your search</h4>
+            <h4 class="text-center" style = "margin-left: auto; margin-right: auto; margin-top: 30px; color: #333333">Click to further expand your search</h4>
         </div>
             </form>
             <!-- <div class="container" data-aos="fade"> -->
@@ -231,8 +231,6 @@
               </table>
             </div>
         {% endif %}
-
-    </body>
 <!--     <div class="top_right">
       <p>Project Name: {{ name }}</p>
       <p>Student Names: {{ netid }}</p>
@@ -259,4 +257,6 @@
         <span>Priyanka Rathnam (pcr43) | Minzhi Wang (mw787) | Emily Sun (eys27) | Lillyan Pan (ldp54) | Rachel Kwak (sk247)</span>
     </div>
 </footer>
+</div>
+</body>
 </html>

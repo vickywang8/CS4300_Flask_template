@@ -45,14 +45,13 @@ color: #4285F4;
 padding-bottom: 120px !important;
 background-image: url("microphone_new.jpg");
 background-size: cover;
-opacity: .98;
+opacity: .93;
 }
 
 th {
 	color: #E62B1E;
 }
 .global-search{
-margin-top: 50px;
 margin-bottom: 0px;
 }
 .top_right{
@@ -122,9 +121,9 @@ td {
 .button {
   display: inline-block;
   border-radius: 8px;
-  background-color: #ccc9c9;
+  background-color: #333333;
   border: none;
-  color: #FFFFFF;
+  color: #E5E5E5;
   text-align: center;
   font-size: 14px;
   padding: 10px;
@@ -132,6 +131,7 @@ td {
   transition: all 0.2s;
   cursor: pointer;
   margin: 5px;
+  font-weight: bold;
 }
 
 .button span {
@@ -158,4 +158,29 @@ td {
   opacity: 1;
   right: 0;
 }
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+  padding-bottom: 0px;
+}
+.wrapper {
+	position: relative;
+	min-height: 100%;
+}
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  background-color: #333333;
+  height: 45px;
+  padding-top: 13px;
+  color: #E5E5E5;
 
+}
+.table {
+	margin-bottom: 60px !important;
+}

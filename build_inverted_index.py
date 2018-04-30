@@ -82,7 +82,7 @@ def build_inverted_index(msgs, text_data_type):
     return index
 
 
-def compute_idf(inv_idx, n_docs, min_df=5, max_df_ratio=0.80):
+def compute_idf(inv_idx, n_docs, min_df=10, max_df_ratio=0.80):
     idf = {}
     
     for word, idx in inv_idx.items():
@@ -178,7 +178,6 @@ np.save("svd_similarity", svd_similarity)
 
 topic_dict, doc_topic_score = topic_modeling(tfidf, idx_transcript)
 np.save("doc_topic_score", doc_topic_score)
-
 topic_name_dict = {0: "Self Reflection", 2: "Ants", 3: "Biology", 4: "Climate Change", 5: "Brain", 6: "Finance", 7: "Robots", 8: "Computer Security", 9: "Outer Space", 10: "Spiders", 11: "Mars", 12: "Galaxies", 13: "Viruses", 14: "Insects", 15: "Genetics", 16: "Water", 18: "Nuclear", 19: "Sea Life", 20: "Black Holes", 21: "Urban", 22: "Cancer", 23: "Gender", 24: "Coral Reefs", 26: "China", 29: "Refugees", 31: "Music", 32: "Gaming", 33: "War", 34: "Politics", 36: "Middle East", 37: "Africa", 38: "Sex Trade", 40: "Computers", 41: "Injuries", 42: "Geometry", 43: "Microbiology", 45: "Socioeconomic", 46: "Bacteria", 47: "Malaria", 48: "Fish", 50: "Disease", 51: "Food", 53: "Outdoors", 54: "Autism", 55: "India", 56: "Fireflies", 57: "Dinosaurs", 58: "Data", 59: "LGBTQ", 60: "Beetles", 61: "Donald Trump", 63: "String Theory", 64: "Addiction", 65: "Bats", 66: "Morality", 67: "Drugs", 68: "Prosthetics", 69: "Oil", 70: 'Quantum Mechanics', 71: 'Breast Cancer', 72: 'Particle Physics', 73: 'Art', 74: 'Hormones', 75: 'National Security', 76: 'Sleep', 77: 'Genes', 78: 'Forest', 79: 'Energy', 80: 'Healthcare', 81: 'Crime', 82: 'Patent', 83: 'Consciousness', 84: 'Stress', 85: 'Ebola', 86: 'Education', 87: 'Family', 88: 'Agriculture', 89: 'Laser', 90: 'Iran', 91: 'Banking', 92: 'Arctic', 93: 'Religion', 94: 'Antibiotics', 95: 'Language', 98: 'Car Accident', 99: 'Feminism'}
 
 name_topic_dict = {v: k for k, v in topic_name_dict.iteritems()}
