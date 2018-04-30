@@ -224,23 +224,9 @@ def search():
         updated_query = topic_stems + updated_query
         new_query = ' '.join(updated_query)
         query = new_query
-        # TODO: not sure if want to keep none
-        sortBy = "None"
     else:
         output_query = query
         first_search = 0
-
-    # print("______FIRST SEARCH_______")
-    # print(first_search)
-
-    # print("______QUERY_______")
-    # print(query)
-
-    # print("______OUTPUT QUERY_______")
-    # print(output_query)
-
-    # print("______LOCAL_______")
-    # print(local)
 
     if query is None:
         output_message = ""
