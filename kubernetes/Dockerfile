@@ -18,7 +18,10 @@ ADD doc_norms_transcript.pickle /service/doc_norms_transcript.pickle
 ADD doc_norms_description.pickle /service/doc_norms_description.pickle
 ADD clus50K+tedId_to_clusterId2.pickle /service/clus50K+tedId_to_clusterId2.pickle
 ADD clus50K+clusterId_to_tedId2.pickle /service/clus50K+clusterId_to_tedId2.pickle
-ADD svd_similarity.pickle /service/svd_similarity.pickle
+ADD svd_similarity.npy /service/svd_similarity.npy
+ADD doc_topic_score.npy /service/doc_topic_score.npy
+ADD topic_dict.pickle /service/topic_dict.pickle
+ADD topic_name_dict.pickle /service/topic_name_dict.pickle
 WORKDIR /service/
 RUN pip install -r requirements.txt
 CMD python -u app.py $APP_SETTINGS $DATABASE_URL
