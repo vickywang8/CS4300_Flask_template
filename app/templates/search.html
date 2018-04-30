@@ -52,27 +52,6 @@
                 <input id="input" type="text" name="search" class="form-control" placeholder="What do you want to watch today?" style="color: #545454">
             {% endif %}
             </div>
-            <div class="input-group-prepend ratingsDropDown">
-              <select id="sort-item" class="custom-select" name="sortBy" >
-              <option value="None" selected>Sort By</option>
-
-                <option value="views" href="#">Views</option>
-                <option value="Beautiful" href="#">Beautiful</option>
-                <option value="Confusing" href="#">Confusing</option>
-                <option value="Courageous" href="#">Courageous</option>
-                <option value="Funny" href="#">Funny</option>
-                <option value="Informative" href="#">Informative</option>
-                <option value="Ingenious" href="#">Ingenious</option>
-                <option value="Inspiring" href="#">Inspiring</option>
-                <option value="Longwinded" href="#">Longwinded</option>
-                <option value="Unconvincing" href="#">Unconvincing</option>
-                <option value="Fascinating" href="#">Fascinating</option>
-                <option value="Jawdropping" href="#">Jaw-dropping</option>
-                <option value="Persuasive" href="#">Persuasive</option>
-                <option value="OK" href="#">OK</option>
-                <option value="Obnoxious" href="#">Obnoxious</option>
-              </select>
-            </div>
             <button type="submit" name="submit_btn" class="btn btn-info searchButton" value="submitted">
                 Search
             </button>
@@ -97,6 +76,35 @@
                   <tr>
                     <th class="col-sm-3"><h2 style="font-weight: bold; color: #333">Our Recommendations</h2></th>
                     <th class="col-sm-1"><h2 style="font-weight: bold; color: #333; margin-left: 60px">User Ratings</h2></th>
+                  </tr>
+                  <tr>
+                    <th class="col-sm-3">Sorted by: {{sortBy}}</th>
+                    <th class="col-sm-1">
+                        <div class="pull-right" >
+                          <form id="sort-item" method="get">
+                           <select id="sort-item" class="custom-select" name="sortBy" onchange = 'this.form.submit();'>
+                            <option value="None" selected>Sort By</option>
+
+                            <option value="views" href="#">Views</option>
+                            <option value="Beautiful" href="#">Beautiful</option>
+                            <option value="Confusing" href="#">Confusing</option>
+                            <option value="Courageous" href="#">Courageous</option>
+                            <option value="Funny" href="#">Funny</option>
+                            <option value="Informative" href="#">Informative</option>
+                            <option value="Ingenious" href="#">Ingenious</option>
+                            <option value="Inspiring" href="#">Inspiring</option>
+                            <option value="Longwinded" href="#">Longwinded</option>
+                            <option value="Unconvincing" href="#">Unconvincing</option>
+                            <option value="Fascinating" href="#">Fascinating</option>
+                            <option value="Jawdropping" href="#">Jaw-dropping</option>
+                            <option value="Persuasive" href="#">Persuasive</option>
+                            <option value="OK" href="#">OK</option>
+                            <option value="Obnoxious" href="#">Obnoxious</option>
+                        </select>
+                         <input type="hidden" value="{{ query }}" name="search">
+                        </form>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
