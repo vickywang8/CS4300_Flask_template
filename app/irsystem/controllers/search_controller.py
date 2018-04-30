@@ -3,6 +3,7 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 import math
 import random
+import os
 import sys
 from nltk.tokenize import TreebankWordTokenizer
 from nltk.stem import PorterStemmer
@@ -19,6 +20,11 @@ import scipy.sparse
 ##
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+@irsystem.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(irsystem.root_path, 'static'),
+                          'favicon.ico',mimetype='image/vnd.microsoft.icon')
 
 first_search = 0
 local = ''
