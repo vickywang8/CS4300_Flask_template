@@ -12,7 +12,26 @@
         <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script type="text/javascript" src="/js/dropdown.js"></script>
+        <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+        <!-- <link rel="stylesheet" href="bower_components/aos/dist/aos.css" />
+        <script src="bower_components/aos/dist/aos.js"></script> -->
+        <script>
+          // window.sr = ScrollReveal({ move: 1 });
+
+          // // Add class to <html> if ScrollReveal is supported
+          // // Note: this method is deprecated, and only works in version 3
+          // if (sr.isSupported()) {
+          //   document.documentElement.classList.add('sr');
+          // }
+
+        </script>
+        <style>
+
+          /* Ensure elements load hidden before ScrollReveal runs */
+          /*.sr .videos { visibility: hidden; }*/
+          /*.videos { visibility: hidden; }*/
+
+        </style>
     </head>
     <body>
     <div class="wrapper">
@@ -48,7 +67,7 @@
                 <option value="Longwinded" href="#">Longwinded</option>
                 <option value="Unconvincing" href="#">Unconvincing</option>
                 <option value="Fascinating" href="#">Fascinating</option>
-                <option value="Jaw-dropping" href="#">Jaw-dropping</option>
+                <option value="Jawdropping" href="#">Jaw-dropping</option>
                 <option value="Persuasive" href="#">Persuasive</option>
                 <option value="OK" href="#">OK</option>
                 <option value="Obnoxious" href="#">Obnoxious</option>
@@ -67,10 +86,12 @@
         {% if data %}
         <form class="form-inline global-search">
         <div class="container">
-            <h4 class="text-center" style = "margin-left: auto; margin-right: auto; margin-top: 30px; color: #545454">Click to further expand your search</h4>
-        </div> 
+            <h4 class="text-center" style = "margin-left: auto; margin-right: auto; margin-top: 30px; color: #333333">Click to further expand your search</h4>
+        </div>
             </form>
-            <div class="container">
+            <!-- <div class="container" data-aos="fade"> -->
+            <!-- <div class="container videos" data-sr="move 0px"> -->
+            <div class="container videos">
               <table class="table">
                 <thead>
                   <tr>
@@ -87,10 +108,20 @@
 
                 {% for talk in data %}
                     <tr>
-                        <td><a href="{{ talk.url }}"><h1 style="font-size: 24px; margin-top: 50px; margin-bottom: 3px">{{ talk.title }}</h1></a><p><i>{{talk.speaker}}</i>{{", " + talk.year}}</p><p style="font-size: 13px">{{ talk.description[0] }}</p>
+                        <td>
+                        <a href="{{ talk.url }}">
+                          <h1 style="font-size: 24px; margin-top: 50px; margin-bottom: 3px">{{ talk.title }}</h1>
+                        </a>
+                        {% if talk['type'] == 'cluster' %}
+                          <span class="clusterLab label label-warning">Explore</span><p><i>{{talk.speaker}}</i>{{", " + talk.year}}</p>
+                        {% endif %}
+                        {% if talk['type'] != 'cluster' %}
+                          <p><i>{{talk.speaker}}</i>{{", " + talk.year}}</p>
+                        {% endif %}
+                        <p style="font-size: 13px">{{ talk.description[0] }}</p>
                         <p style="color:#cf4141;"><strong><script>document.write({{talk.views}}..toLocaleString());</script></strong> views</p>
                         {% for tag in talk.tags %}
-                            <span class="label label-default">{{tag}}</span>
+                            <span class="talks label label-default">{{tag}}</span>
                         {% endfor %}
                         </td>
                         <td>
@@ -205,15 +236,21 @@
       <p>Student Names: {{ netid }}</p>
     </div> -->
 
-<!--   <script>  
+    <!-- script type="text/javascript">
+      // window.sr = ScrollReveal({ move: 0 });
+      sr.reveal('.videos', { opacity: 0, duration: 500 });
+      // AOS.init();
+    </script> -->
+
+<!--   <script>
     window.onload = function() {
-    var selItem = sessionStorage.getItem("SelItem");  
+    var selItem = sessionStorage.getItem("SelItem");
     $('#sort-item').val(selItem);
     }
-    $('#sort-item').change(function() { 
+    $('#sort-item').change(function() {
         var selVal = $(this).val();
         sessionStorage.setItem("SelItem", selVal);
-    });  
+    });
   </script> -->
 <div class="footer">
 Priyanka Rathnam (pcr43) | Minzhi Wang (mw787) | Emily Sun (eys27) | Lillyan Pan (ldp54) | Rachel Kwak (sk247)
