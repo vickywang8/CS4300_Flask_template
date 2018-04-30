@@ -52,7 +52,6 @@ th {
 	color: #E62B1E;
 }
 .global-search{
-margin-top: 50px;
 margin-bottom: 0px;
 }
 .top_right{
@@ -148,4 +147,28 @@ td {
   opacity: 1;
   right: 0;
 }
-
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+  padding-bottom: 0px;
+}
+.wrapper {
+	position: relative;
+	min-height: 100%;
+}
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  background-color: #ccc9c9;
+  height: 45px;
+  padding-top: 13px;
+  color: #FFFFFF;
+}
+.table {
+	margin-bottom: 40px;
+}
