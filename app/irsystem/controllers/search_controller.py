@@ -75,11 +75,11 @@ with open('doc_norms_description.pickle', 'rb') as doc_norms_description_handle:
     print("doc_norms_description --- %s seconds ---" % (time.time()-start_time))
     doc_norms_description = pickle.load(doc_norms_description_handle)
 
-with open('clus50K+clusterId_to_tedId2.pickle', 'rb') as clusterId_to_tedId_handle:
+with open('100scclusterId_to_tedId2.pickle', 'rb') as clusterId_to_tedId_handle:
     print("clusterId_to_tedId2 --- %s seconds ---" % (time.time()-start_time))
     clusterId_to_tedId = pickle.load(clusterId_to_tedId_handle)
 
-with open('clus50K+tedId_to_clusterId2.pickle', 'rb') as tedId_to_clusterId_handle:
+with open('100sctedId_to_clusterId.pickle', 'rb') as tedId_to_clusterId_handle:
     print("tedId_to_clusterId2 --- %s seconds ---" % (time.time()-start_time))
     tedId_to_clusterId = pickle.load(tedId_to_clusterId_handle)
 
@@ -220,7 +220,7 @@ def search():
         sortBy = "None"
     else:
         output_query = query
-        first_search = 0 
+        first_search = 0
 
     # print("______FIRST SEARCH_______")
     # print(first_search)
