@@ -73,7 +73,7 @@
                            <select id="sort-item" class="custom-select" name="sortBy" onchange = 'this.form.submit();'>
                             <option value="None" selected>Sort By</option>
 
-                            <option value="views" href="#">Views</option>
+                            <option value="Views" href="#">Views</option>
                             <option value="Beautiful" href="#">Beautiful</option>
                             <option value="Confusing" href="#">Confusing</option>
                             <option value="Courageous" href="#">Courageous</option>
@@ -89,7 +89,12 @@
                             <option value="OK" href="#">OK</option>
                             <option value="Obnoxious" href="#">Obnoxious</option>
                         </select>
-                         <input type="hidden" value="{{ output_query }}" name="search">
+                         <input type="hidden" value="{{ query }}" name="search">
+                         {% if topic_output %}
+                          {% for t in topics %}
+                         <input type="hidden" value="{{t}},{{query}}" name="topic_search">
+                          {% endfor %}
+                         {% endif %}
                         </form>
                       </div>
                     </th>
@@ -99,6 +104,7 @@
                 {% for t in topics %}
                 <form>
                  <button type="submit" name="topic_search" class="button" value="{{t}},{{query}}" style="vertical-align:middle"><span>{{t}}</span></button>
+                 <input type="hidden" value="{{sortBy}}" name="sortBy">
                 </form>
                 {% endfor %}
 

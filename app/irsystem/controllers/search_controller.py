@@ -184,7 +184,7 @@ def get_docs_from_cluster(target_id, cluster, inv_idx, idf, cluster_len):
 def sortData(data, sort_criteria):
     if sort_criteria == "None":
         return data
-    elif sort_criteria == "views":
+    elif sort_criteria == "Views":
         for talk in data:
             talk[sort_criteria] = int(talk[sort_criteria])
         data = sorted(data, key=itemgetter(sort_criteria), reverse=True)
@@ -200,6 +200,7 @@ def search():
     if not sortBy:
         sortBy = 'None'
     topic_search = request.args.get('topic_search')
+    topic_output = False
     data = []
     similar_talks = []
     cluster_res = []
@@ -212,6 +213,7 @@ def search():
 
     # Improve query from topic buttons
     if topic_search is not None:
+        topic_output = True
         updated_query = topic_search.split(',')
         if first_search == 0:
             output_query = updated_query[1]
@@ -322,4 +324,4 @@ def search():
         else:
             output_message = "You searched for \"" + output_query + "\"."
 
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, sortBy=sortBy, topics=top_topics, output_query=output_query)
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, sortBy=sortBy, topics=top_topics, output_query=output_query, topic_output=topic_output)
