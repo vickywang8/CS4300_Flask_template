@@ -197,6 +197,8 @@ def sortData(data, sort_criteria):
 def search():
     query = request.args.get('search')
     sortBy = request.args.get('sortBy')
+    if not sortBy:
+        sortBy = 'views'
     topic_search = request.args.get('topic_search')
     data = []
     similar_talks = []
@@ -334,4 +336,4 @@ def search():
         else:
             output_message = "You searched for \"" + output_query + "\"."
 
-    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, topics=top_topics, output_query=output_query)
+    return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query, sortBy=sortBy, topics=top_topics, output_query=output_query)
