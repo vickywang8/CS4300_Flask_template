@@ -62,9 +62,13 @@
                     <th class="col-sm-1"><h2 style="font-weight: bold; color: #333; margin-left: 60px">User Ratings</h2></th>
                   </tr>
                   <tr>
-                    <th class="col-sm-3">Sorted by: {{sortBy}}</th>
+                    <th class="col-sm-3" style="color:#333">
+                      {% if sortBy != "None" %}
+                        Sorted by: {{sortBy}}
+                      {% endif %}
+                    </th>
                     <th class="col-sm-1">
-                        <div class="pull-right" >
+                        <div class="pull-right" style="height: 34px">
                           <form id="sort-item" method="get">
                            <select id="sort-item" class="custom-select" name="sortBy" onchange = 'this.form.submit();'>
                             <option value="None" selected>Sort By</option>

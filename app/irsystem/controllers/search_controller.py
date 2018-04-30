@@ -198,7 +198,7 @@ def search():
     query = request.args.get('search')
     sortBy = request.args.get('sortBy')
     if not sortBy:
-        sortBy = 'views'
+        sortBy = 'None'
     topic_search = request.args.get('topic_search')
     data = []
     similar_talks = []
@@ -318,7 +318,7 @@ def search():
         top_topics = [topic_name_dict[i] for i in set(topics_idx[:5]) if i in topic_name_dict]
 
         if top_10[0][0] == 0:
-            output_message = "No results for \"" + query + "\". Here are some suggested videos."
+            output_message = "No results for \"" + output_query + "\". Here are some suggested videos."
         else:
             output_message = "You searched for \"" + output_query + "\"."
 
