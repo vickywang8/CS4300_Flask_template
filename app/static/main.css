@@ -94,13 +94,14 @@ td {
 }
 
 .custom-select {
-  width:110px;
+  width:150px;
   height: 34px;
   padding: 0px 0px 0px 5px;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-left: 3px
+  margin-left: 3px;
+  font-color:#333;
 }
 
 .row .h1 {
