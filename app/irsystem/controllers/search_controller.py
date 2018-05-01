@@ -197,9 +197,10 @@ def sortData(data, sort_criteria):
 def search():
 	first_search = request.args.get('first_search')
 	output_query = request.args.get('output_query')
+	query = request.args.get('query')
 	if first_search:
 		output_query = first_search
-	query = request.args.get('query')
+		query = output_query
 	sortBy = request.args.get('sortBy')
 	if not sortBy:
 		sortBy = 'None'
@@ -220,11 +221,7 @@ def search():
 		topic_output = True
 		topic_idx = name_topic_dict[topic_search]
 		topic_stems = topic_dict[topic_idx]
-		if query is None:
-			query = output_query
-		query = ' '.join(topic_stems) + query
-	else:
-		query = output_query
+		query = ' '.join(topic_stems) + " " + query
 
 	if first_search is None and output_query is None:
 		output_message = ""
