@@ -226,9 +226,9 @@ def search():
 	else:
 		query = output_query
 
-	if output_query is None:
+	if first_search is None and output_query is None:
 		output_message = ""
-	elif not output_query:
+	elif not first_search:
 		output_message = "Please enter a valid query."
 	else:
 		author_talks = search_by_author(query, all_talks)
