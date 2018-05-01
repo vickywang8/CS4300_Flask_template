@@ -30,10 +30,10 @@
             <br><br>
             <span>
             <div class="form-group">
-            {% if query %}
-                <input id="input" type="text" name="search" class="form-control" value="{{output_query}}" style="color: #545454">
+            {% if output_query %}
+                <input id="input" type="text" name="first_search" class="form-control" value="{{output_query}}" style="color: #545454">
             {% else %}
-                <input id="input" type="text" name="search" class="form-control" placeholder="What do you want to watch today?" style="color: #545454">
+                <input id="input" type="text" name="first_search" class="form-control" placeholder="What do you want to watch today? (i.e. al gore, facebook)" style="color: #545454">
             {% endif %}
             </div>
             <button type="submit" name="submit_btn" class="btn btn-info searchButton" value="submitted">
@@ -89,12 +89,13 @@
                             <option value="OK" href="#">OK</option>
                             <option value="Obnoxious" href="#">Obnoxious</option>
                         </select>
-                         <input type="hidden" value="{{ query }}" name="search">
-                         {% if topic_output %}
+                         <input type="hidden" value="{{ query }}" name="query">
+                         <input type="hidden" value="{{ output_query }}" name="output_query">
+<!--                          {% if topic_output %}
                           {% for t in topics %}
-                         <input type="hidden" value="{{t}},{{query}}" name="topic_search">
+                         <input type="hidden" value="{{t}}" name="topic_search">
                           {% endfor %}
-                         {% endif %}
+                         {% endif %} -->
                         </form>
                       </div>
                     </th>
@@ -103,8 +104,10 @@
                 <tbody>
                 {% for t in topics %}
                 <form>
-                 <button type="submit" name="topic_search" class="button" value="{{t}},{{query}}" style="vertical-align:middle"><span>{{t}}</span></button>
+                 <button type="submit" name="topic_search" class="button" value="{{t}}" style="vertical-align:middle"><span>{{t}}</span></button>
+                 <input type="hidden" value="{{query}}" name="query">
                  <input type="hidden" value="{{sortBy}}" name="sortBy">
+                 <input type="hidden" value="{{output_query}}" name="output_query">
                 </form>
                 {% endfor %}
 
